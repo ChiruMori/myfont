@@ -1,0 +1,57 @@
+plugins {
+    id "java"
+    id "org.springframework.boot" version "2.3.4.RELEASE"
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
+    id "checkstyle"
+}
+
+group "ork.cxlm"
+version "0.1-SNAPSHOT"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+configurations {
+    implementation {
+        exclude module: 'spring-boot-starter-tomcat'
+        exclude module: 'junit'
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    hutoolVersion = "5.3.8"
+    commonsLangVersion = "3.10"
+}
+
+dependencies {
+    implementation "rg.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-jetty"
+    implementation "org.springframework.boot:spring-boot-starter-freemarker"
+    // 封装了表单验证相关注解
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+
+    implementation "com.sun.mail:jakarta.mail"
+    implementation "cn.hutool:hutool-core:$hutoolVersion"
+    implementation "cn.hutool:hutool-crypto:$hutoolVersion"
+    implementation "cn.hutool:hutool-extra:$hutoolVersion"
+    implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
+
+    runtimeOnly "mysql:mysql-connector-java"
+
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
