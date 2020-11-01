@@ -1,11 +1,15 @@
 package work.cxlm.service.impl;
 
+import cn.hutool.crypto.digest.BCrypt;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import work.cxlm.event.LogEvent;
+import work.cxlm.event.UserUpdatedEvent;
 import work.cxlm.exception.BadRequestException;
+import work.cxlm.exception.ForbiddenException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.enums.LogType;
@@ -13,10 +17,13 @@ import work.cxlm.model.params.UserParam;
 import work.cxlm.repository.UserRepository;
 import work.cxlm.service.UserService;
 import work.cxlm.service.base.AbstractCrudService;
+import work.cxlm.utils.MyFontDateUtils;
 import work.cxlm.utils.MyFontUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * created 2020/10/22 16:00
@@ -93,17 +100,28 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     public User createBy(UserParam userParam) {
-        return null;
+        Assert.notNull(userParam, "用户参数对象不能为 null");
+        User user = userParam.convertTo();
+        setPassword(user, userParam.getPassword());
+        return create(user);
     }
 
     @Override
     public void mustNotExpire(User user) {
+        Assert.notNull(user, "User 不能为 null");
 
+        Date now = MyFontDateUtils.now();
+        if (user.getExpireTime() != null && user.getExpireTime().after(now)) {
+            // 未到达停用时间
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(user.getExpireTime().getTime() - now.getTime());
+            throw new ForbiddenException("账号已被停用，请" + MyFontUtils.timeFormat(seconds) + "后重试").setErrorData(seconds);
+        }
     }
 
     @Override
     public boolean passwordMatch(User user, String plainPassword) {
-        return false;
+        Assert.notNull(user, "用户必不能为 null");
+        return !StringUtils.isBlank(plainPassword) && BCrypt.checkpw(plainPassword, user.getPassword());
     }
 
     @Override
@@ -114,5 +132,16 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     @Override
     public boolean verifyUser(String username, String email) {
         return false;
+    }
+
+    @Override
+    public User create(User user) {
+        if (count() != 0) {
+            throw new BadRequestException("当前系统不允许多个用户同时存在");
+        }
+        User newUser = super.create(user);
+        eventPublisher.publishEvent(new UserUpdatedEvent(this, newUser.getId()));
+
+        return newUser;
     }
 }

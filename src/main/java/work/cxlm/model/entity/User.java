@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 用户实体类，本程序中，只应存在一个合法用户，但需要兼容多个用户的情况
@@ -24,29 +25,24 @@ public class User extends BaseEntity {
     @Column(name = "id")
     private Integer id;
 
-    /**
-     * User name.
-     */
     @Column(name = "username", length = 50, nullable = false)
     private String username;
 
-    /**
-     * User nick name,used to display on page.
-     */
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    /**
-     * Password.
-     */
     @Column(name = "password", nullable = false)
     private String password;
 
-    /**
-     * User email.
-     */
     @Column(name = "email", length = 127)
     private String email;
+
+    /**
+     * 当前用户被停用的到期时间
+     */
+    @Column(name="expire_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expireTime;
 
 
     @Override

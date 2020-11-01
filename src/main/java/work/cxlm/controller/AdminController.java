@@ -15,7 +15,7 @@ import work.cxlm.service.AdminService;
 @RequestMapping("/font/api/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    // FIXME: private final AdminService adminService;
 
 
 
