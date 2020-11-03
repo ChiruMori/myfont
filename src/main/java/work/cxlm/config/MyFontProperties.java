@@ -27,7 +27,7 @@ public class MyFontProperties {
      * 缓存保存的位置
      * 可选：memory, level, redis
      */
-    private String cache = "memory";
+    private String cache = "level";
 
     private String workDir = MyFontUtils.ensureSuffix(USER_HOME, FILE_SEPARATOR) + ".my_font" + FILE_SEPARATOR;
 

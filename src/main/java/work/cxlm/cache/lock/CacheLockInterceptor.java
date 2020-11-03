@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import work.cxlm.cache.AbstractStringCacheStore;
+import work.cxlm.exception.FrequentAccessException;
+import work.cxlm.exception.ServiceException;
 import work.cxlm.utils.ServletUtils;
 
 import java.lang.annotation.Annotation;
@@ -48,10 +50,22 @@ public class CacheLockInterceptor {
         // 创建缓存锁（键)
         String cacheLockKey = buildCacheLockKey(cacheLock, joinPoint);
         log.debug("建立的 cache key: [{}]", cacheLockKey);
-//        try{
-//            TODO: Boolean cacheResult = cacheStore
-//        }
-        return null;
+        try {
+            Boolean cacheResult = cacheStore.putIfAbsent(cacheLockKey, CACHE_LOCK_VALUE, cacheLock.expired(), cacheLock.timeUnit());
+            if (cacheResult == null) {
+                throw new ServiceException("未知的缓存状态：" + cacheLockKey).setErrorData(cacheLockKey);
+            }
+            if (!cacheResult) {
+                throw new FrequentAccessException("访问过于频繁，请稍候重试").setErrorData(cacheLockKey);
+            }
+
+            return joinPoint.proceed();
+        } finally {
+            if (cacheLock.autoDelete()) {
+                cacheStore.delete(cacheLockKey);
+                log.debug("删除缓存锁：[{}]", cacheLock);
+            }
+        }
     }
 
     private String buildCacheLockKey(@NonNull CacheLock cacheLock, @NonNull ProceedingJoinPoint joinPoint) {

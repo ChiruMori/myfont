@@ -40,7 +40,7 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
     abstract void putInternal(@NonNull K key, @NonNull CacheWrapper<V> value);
 
     /**
-     * 如果存在则设置，TODO：超时
+     * 如果存在则设置
      *
      * @param key   缓存键
      * @param value 缓存值

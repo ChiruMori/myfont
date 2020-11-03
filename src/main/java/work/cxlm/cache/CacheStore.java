@@ -35,7 +35,6 @@ public interface CacheStore<K, V> {
 
     /**
      * 如果该键存在则设置
-     * TODO: 如果一个键存在但已过期怎么处理
      * @param key 缓存键
      * @param value 缓存值
      * @param timeout 过期时间
