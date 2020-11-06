@@ -27,6 +27,7 @@ ext {
     hutoolVersion = "5.3.8"
     commonsLangVersion = "3.10"
     levelDbVersion = "0.12"
+    jedisVersion = "3.3.0"
 }
 
 dependencies {
@@ -44,8 +45,10 @@ dependencies {
     implementation "cn.hutool:hutool-extra:$hutoolVersion"
     implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
 
-    // 是 Google 开源的持久化 KV 单机数据库，具有很高的随机写、顺序读写性能，解决了 Redis 双写导致的一系列问题
+    // 缓存
+    // LevelDB是 Google 开源的持久化 KV 单机数据库，具有很高的随机写、顺序读写性能，解决了 Redis 双写导致的一系列问题
     implementation "org.iq80.leveldb:leveldb:$levelDbVersion"
+    implementation "redis.clients:jedis:$jedisVersion"
     runtimeOnly "mysql:mysql-connector-java"
 
     compileOnly "org.projectlombok:lombok"

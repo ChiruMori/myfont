@@ -40,10 +40,11 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
     abstract void putInternal(@NonNull K key, @NonNull CacheWrapper<V> value);
 
     /**
-     * 如果存在则设置
+     * 如果不存在则设置
      *
      * @param key   缓存键
      * @param value 缓存值
+     * @return 如果键已存在且已经设置了值，则返回 true，键不存在或已过期则返回 false，其他原因则返回 null
      */
     abstract Boolean putInternalIfAbsent(@NonNull K key, @NonNull CacheWrapper<V> value);
 

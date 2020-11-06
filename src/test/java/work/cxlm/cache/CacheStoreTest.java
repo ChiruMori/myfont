@@ -36,6 +36,7 @@ public class CacheStoreTest {
     void setUp() {
         stores = new LinkedList<>();
         stores.add(new LevelCacheStore(myFontProperties));
+        // TODO: stores.add(new RedisCacheStore(myFontProperties));
     }
 
     @Test
@@ -125,4 +126,5 @@ public class CacheStoreTest {
             assertFalse(valueOptional.isPresent());
         });
     }
+
 }

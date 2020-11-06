@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import work.cxlm.cache.AbstractStringCacheStore;
 import work.cxlm.cache.LevelCacheStore;
+import work.cxlm.cache.RedisCacheStore;
 
 /**
  * 程序相关配置
@@ -45,7 +46,7 @@ public class MyFontConfiguration {
                 stringCacheStore = new LevelCacheStore(myFontProperties);
                 break;
             case "redis":
-//              TODO: stringCacheStore = new RedisCacheStore(myFontProperties);
+                stringCacheStore = new RedisCacheStore(myFontProperties);
                 break;
             case "memory":
             default:

@@ -40,6 +40,7 @@ public class LevelCacheStore extends AbstractStringCacheStore {
 
     public LevelCacheStore(MyFontProperties properties) {
         super.myFontProperties = properties;
+        init();
     }
 
     @PostConstruct
@@ -120,8 +121,10 @@ public class LevelCacheStore extends AbstractStringCacheStore {
     Boolean putInternalIfAbsent(String key, CacheWrapper<String> value) {
         Assert.hasText(key, "缓存键不能为空");
 
-        boolean res = LEVEL_DB.get(stringToBytes(key)) == null;
-        putInternal(key, value);
+        boolean res = get(key).isPresent();
+        if (!res) {
+            putInternal(key, value);
+        }
         return res;
     }
 

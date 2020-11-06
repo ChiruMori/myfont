@@ -63,15 +63,19 @@
 + 缓存模块
 + 全局配置（MyFontProperties 部分功能）
 
+
+
 ### TODO
 
 + 基础架构
     + 缓存模块
-        + LevelDB 实现
-        + Redis 实现
         + 内存实现
     + 全局配置
 + 登录模块
     + AdminService
     + UserService
 + 重写邮件功能模块
+
+### BUGS
+
++ Redis 缓存因未知问题（疑似配置问题）导致无法使用
