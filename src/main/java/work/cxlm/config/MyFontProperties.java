@@ -36,7 +36,7 @@ public class MyFontProperties {
     private String cache = "level";
 
     /**
-     * 可用的 Redis 姐节点
+     * 可用的 Redis 节点
      */
     private List<String> redisNodes = new ArrayList<>();
 

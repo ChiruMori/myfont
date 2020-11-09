@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e5ecce63-35d8-41e3-abb0-4ec8e21f089c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/cache/InMemoryCacheStore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/DiscardAbstractMailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/OptionSimpleDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/OptionDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/entity/Option.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/enums/OptionType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/OptionParam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/OptionQuery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/properties/PropertyEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/repository/OptionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/authentication/Authentication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/authentication/AuthenticationImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/context/SecurityContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/context/SecurityContextHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/context/SecurityContextImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/support/UserDetail.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/util/SecurityUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/OptionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/OptionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/AbstractMailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/AbstractMailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/DiscardMailServiceImplDiscard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/base/InputConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/base/InputConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/work/cxlm/cache/CacheStoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/work/cxlm/cache/CacheStoreTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/work/cxlm/mail/MailTester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/work/cxlm/mail/MailTester.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA 2020.2.3\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1k0nwRaw5Q53UFGcvQHqXIAxiWM" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="work.cxlm.mail" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.CacheStoreTest">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CacheStoreTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;work.cxlm.cache.CacheStoreTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="CacheStoreTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="myfont.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="work.cxlm.cache.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="work.cxlm.cache" />
+      <option name="MAIN_CLASS_NAME" value="work.cxlm.cache.CacheStoreTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MyFontApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="myfont.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="work.cxlm.MyFontApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.CacheStoreTest" />
+      <item itemvalue="JUnit.CacheStoreTest" />
+      <item itemvalue="Spring Boot.MyFontApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.CacheStoreTest" />
+        <item itemvalue="Gradle.CacheStoreTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e5ecce63-35d8-41e3-abb0-4ec8e21f089c" name="Default Changelist" comment="" />
+      <created>1604846614854</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1604846614854</updated>
+      <workItem from="1604846616122" duration="2455000" />
+      <workItem from="1604884058845" duration="4839000" />
+      <workItem from="1604889306849" duration="26926000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604847951069">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604847951069" />
+    <state x="93" y="93" width="1350" height="638" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1604848384225">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="93" y="93" width="1350" height="638" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848384225" />
+    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser" timestamp="1604926456642">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604926456642" />
+    <state x="196" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1604904674796">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="196" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604904674796" />
+    <state width="1483" height="228" key="GridCell.Tab.0.bottom" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.0.center" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.0.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.0.left" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.0.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.0.right" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.0.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.1.bottom" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.1.center" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.1.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.1.left" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.1.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state width="1483" height="228" key="GridCell.Tab.1.right" timestamp="1604848650639">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="228" key="GridCell.Tab.1.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
+    <state x="153" y="0" key="SettingsEditor" timestamp="1604888975374">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="153" y="0" key="SettingsEditor/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604888975374" />
+    <state x="341" y="183" key="run.anything.popup" timestamp="1604885135037">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="341" y="183" key="run.anything.popup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604885135037" />
+    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup" timestamp="1604931145349">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604931145349" />
+  </component>
+</project>

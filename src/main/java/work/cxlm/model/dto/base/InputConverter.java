@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Objects;
 
 /**
- * 将输入转为实体的转换接口
+ * 将输入(Param)转为实体(DOMAIN)的转换接口
  *
  * @author johnniang
  * @author cxlm

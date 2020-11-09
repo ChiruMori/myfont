@@ -37,6 +37,7 @@ public class CacheStoreTest {
         stores = new LinkedList<>();
         stores.add(new LevelCacheStore(myFontProperties));
         // TODO: stores.add(new RedisCacheStore(myFontProperties));
+        stores.add(new InMemoryCacheStore());
     }
 
     @Test

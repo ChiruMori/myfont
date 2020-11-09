@@ -7,8 +7,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/font?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=UTC
     username: root
-    password: lm13190492195
-    # password: DB_mima~9749
+    password: DB_mima~9749
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,5 +16,5 @@ spring:
     host: smtp.ym.163.com
     port: 25
     username: cxlm@cxlm.work
-    password: cxlmmima123456
+    password: "**************"
     from: "MyFont 后台管理"

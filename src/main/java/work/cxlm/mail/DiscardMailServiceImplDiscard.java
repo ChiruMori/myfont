@@ -19,11 +19,12 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class MailServiceImpl extends AbstractMailService {
+@Deprecated
+public class DiscardMailServiceImplDiscard extends DiscardAbstractMailService {
 
     private final FreeMarkerConfigurer freeMarker;
 
-    public MailServiceImpl(FreeMarkerConfigurer freeMarker) {
+    public DiscardMailServiceImplDiscard(FreeMarkerConfigurer freeMarker) {
         this.freeMarker = freeMarker;
     }
 

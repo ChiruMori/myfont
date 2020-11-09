@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import work.cxlm.cache.AbstractStringCacheStore;
+import work.cxlm.cache.InMemoryCacheStore;
 import work.cxlm.cache.LevelCacheStore;
 import work.cxlm.cache.RedisCacheStore;
 
@@ -40,7 +41,7 @@ public class MyFontConfiguration {
     @Bean
     @ConditionalOnMissingBean  // 防止重复注册，出现重复的情况直接抛出异常
     public AbstractStringCacheStore stringCacheStore() {
-        AbstractStringCacheStore stringCacheStore = null;  // TODO: DELETE null
+        AbstractStringCacheStore stringCacheStore;
         switch (myFontProperties.getCache()) {
             case "level":
                 stringCacheStore = new LevelCacheStore(myFontProperties);
@@ -50,10 +51,10 @@ public class MyFontConfiguration {
                 break;
             case "memory":
             default:
-//              TODO: stringCacheStore = new InMemoryCacheStore();
+                stringCacheStore = new InMemoryCacheStore();
                 break;
         }
-//        TODO: log.info("正在使用 [{}] 缓存", stringCacheStore.getClass());
+        log.info("正在使用 [{}] 缓存", stringCacheStore.getClass());
         return stringCacheStore;
     }
 

@@ -20,21 +20,20 @@ import java.util.concurrent.Executors;
 
 /**
  * Abstract mail service.
- * created 2020.11.09 14:55:03
+ * 已废弃，因参数写死，替换为可以动态配置的实现方案，本套实现方案可用于 properties 配置唯一写死的邮件配置使用
  *
  * @author johnniang
  * @author cxlm
  */
 @Slf4j
-public abstract class AbstractMailService implements MailService {
+@Deprecated
+public abstract class DiscardAbstractMailService implements MailService {
 
     private static final int DEFAULT_POOL_SIZE = 5;
-
-    private JavaMailSender sender;
-    private MailProperties mailProperties;
-    private String fromName;
     @Nullable
     private ExecutorService executorService;
+
+    private JavaMailSender sender;
 
     @Value("${spring.mail.from}")
     private String from;
