@@ -18,13 +18,13 @@ import java.util.Map;
  * @author cxlm
  */
 @Slf4j
-@Service
+// @Service
 @Deprecated
-public class DiscardMailServiceImplDiscard extends DiscardAbstractMailService {
+public class DiscardMailServiceImpl extends DiscardAbstractMailService {
 
     private final FreeMarkerConfigurer freeMarker;
 
-    public DiscardMailServiceImplDiscard(FreeMarkerConfigurer freeMarker) {
+    public DiscardMailServiceImpl(FreeMarkerConfigurer freeMarker) {
         this.freeMarker = freeMarker;
     }
 

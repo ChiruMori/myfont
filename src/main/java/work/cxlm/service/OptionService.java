@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import work.cxlm.model.OptionSimpleDTO;
+import work.cxlm.model.dto.OptionSimpleDTO;
 import work.cxlm.model.dto.OptionDTO;
 import work.cxlm.model.entity.Option;
 import work.cxlm.model.enums.ValueEnum;
@@ -67,7 +67,14 @@ public interface OptionService extends CrudService<Option, Integer> {
     /**
      * 根据给出的 key 列表列出一组属性
      */
+    @NonNull
     Map<String, Object> listOptions(@Nullable List<String> keys);
+
+    /**
+     * 列出全部配置项
+     */
+    @NonNull
+    Map<String, Object> listOptions();
 
     /**
      * 列出全部配置项的 DTO
@@ -138,6 +145,11 @@ public interface OptionService extends CrudService<Option, Integer> {
     <T> Optional<T> getByKey(@NonNull String key, @NonNull Class<T> valueType);
 
     /**
+     * 通过键查找配置项的值，得到 Optional 包装的结果
+     */
+    <T> Optional<T> getByKey(@NonNull String key);
+
+    /**
      * 通过键查找枚举类型配置项的值，同时指定返回值类型，得到 Optional 包装的结果
      */
     <T extends Enum<T>> Optional<T> getEnumByProperty(@NonNull PropertyEnum property, @NonNull Class<T> valueType);
@@ -150,12 +162,17 @@ public interface OptionService extends CrudService<Option, Integer> {
     /**
      * 通过键查找枚举类型配置项的值（ValueEnum 类实例），同时指定返回值类型、枚举类类型，得到 Optional 包装的结果
      */
-    <T, E extends ValueEnum<T>> Optional<E> getValueEnumByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class <T> valueType, @NonNull Class<E> enumType);
+    <T, E extends ValueEnum<T>> Optional<E> getValueEnumByProperty(PropertyEnum property, Class<T> valueType, Class<E> enumType);
 
-    int getPostPageSize();
+    /**
+     * 通过键查找枚举类型配置项的值（ValueEnum 类实例），同时指定返回值类型、枚举类类型、默认值，得到 Optional 包装的结果
+     */
+    <T, E extends ValueEnum<T>> E getValueEnumByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class<T> valueType, @NonNull Class<E> enumType, E defaultValue);
 
-    int getArchivesPageSize();
-
-    int getResPageSize();
+    /**
+     * 将 Option 实例转化为 OptionSimpleDTO 对象
+     */
+    @NonNull
+    OptionSimpleDTO convertToDTO(@NonNull Option option);
 
 }

@@ -1,46 +1,54 @@
 package work.cxlm.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import work.cxlm.cache.AbstractStringCacheStore;
 import work.cxlm.config.MyFontProperties;
-import work.cxlm.model.OptionSimpleDTO;
+import work.cxlm.event.option.OptionUpdatedEvent;
+import work.cxlm.exception.MissingPropertyException;
+import work.cxlm.model.dto.OptionSimpleDTO;
 import work.cxlm.model.dto.OptionDTO;
 import work.cxlm.model.entity.Option;
 import work.cxlm.model.enums.ValueEnum;
 import work.cxlm.model.params.OptionParam;
 import work.cxlm.model.params.OptionQuery;
 import work.cxlm.model.properties.PropertyEnum;
-import work.cxlm.repository.BaseRepository;
 import work.cxlm.repository.OptionRepository;
 import work.cxlm.service.OptionService;
 import work.cxlm.service.base.AbstractCrudService;
+import work.cxlm.utils.ServiceUtils;
+import work.cxlm.utils.ValidationUtils;
 
-import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.persistence.criteria.Predicate;
+import java.util.*;
 
 /**
  * created 2020/11/9 20:53
  *
+ * @author ryanwang
+ * @author johnniang
  * @author Chiru
  */
 @Slf4j
 @Service
 public class OptionServiceImpl extends AbstractCrudService<Option, Integer> implements OptionService {
 
-    private final OptionRepository optionRepository;
+    // TODO: 确保下面两个东西没用后移除
+    private final MyFontProperties myFontProperties;
     private final ApplicationContext applicationContext;
+    private final OptionRepository optionRepository;
     private final AbstractStringCacheStore cacheStore;
     private final ApplicationEventPublisher eventPublisher;
-    private final MyFontProperties myFontProperties;
 
     private final Map<String, PropertyEnum> propertyEnumMap;
 
@@ -66,132 +74,275 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
             return;
         }
 
-        // FIXME: 使用 ServiceUtils 进行数据整理
-        Map<String, Option> oldOptionMap = null;
+        Map<String, Option> oldOptionMap = ServiceUtils.convertToMap(listAll(), Option::getKey);
+        List<Option> optionToCreate = new LinkedList<>();
+        List<Option> optionToUpdate = new LinkedList<>();
+
+        options.forEach((k, v) -> {
+            // 注意，这里的 v 是字符串，不是 Option
+            Option oldOption = oldOptionMap.get(k);
+            if (oldOption == null || !StringUtils.equals(v.toString(), oldOption.getValue())) {
+                // 生成 Param
+                OptionParam param = new OptionParam();
+                param.setKey(k);
+                param.setValue(v.toString());
+                ValidationUtils.validate(param);
+                // 分别存储
+                if (oldOption == null) {
+                    optionToCreate.add(param.convertTo());
+                } else {
+                    param.update(oldOption);
+                    optionToUpdate.add(param.convertTo());
+                }
+            }
+        });
+
+        updateInBatch(optionToUpdate);
+        createInBatch(optionToCreate);
+
+        if (!CollectionUtils.isEmpty(optionToCreate) || !CollectionUtils.isEmpty(optionToUpdate)) {
+            publishOptionUpdateEvent();
+        }
     }
 
     @Override
+    @Transactional  // 因为调用了本类其他有事务的方法，因自调用问题，需要添加事务
     public void save(List<OptionParam> optionParams) {
+        if (CollectionUtils.isEmpty(optionParams)) {
+            return;
+        }
 
+        Map<String, Object> optionMap = ServiceUtils.convertToMap(optionParams, OptionParam::getKey, OptionParam::getValue);
+        save(optionMap);
     }
 
     @Override
     public void save(OptionParam param) {
-
+        if (param == null) {
+            return;
+        }
+        Option opt = param.convertTo();
+        create(opt);
+        publishOptionUpdateEvent();
     }
 
     @Override
     public void update(Integer optionId, OptionParam optionParam) {
-
+        Assert.notNull(optionId, "配置项 ID 不能为 null");
+        Option toUpdate = getById(optionId);
+        optionParam.update(toUpdate);
+        update(toUpdate);
+        publishOptionUpdateEvent();
     }
 
     @Override
     public void saveProperty(PropertyEnum property, String value) {
-
+        Assert.notNull(property, "property 不能为 null");
+        save(Collections.singletonMap(property.getValue(), value));  // 只有一个元素，无需事务
     }
 
     @Override
+    @Transactional
     public void saveProperties(Map<? extends PropertyEnum, String> properties) {
-
+        if (CollectionUtils.isEmpty(properties)) {
+            return;
+        }
+        Map<String, Object> optMap = new LinkedHashMap<>();
+        properties.forEach((k, v) -> optMap.put(k.getValue(), v));
+        save(optMap);
     }
 
+    /**
+     * 列出指定键的全部配置项
+     *
+     * @param keys 需要列出的 key 列表
+     */
     @Override
     public Map<String, Object> listOptions(List<String> keys) {
-        return null;
+        if (CollectionUtils.isEmpty(keys)) {
+            return Collections.emptyMap();
+        }
+        Map<String, Object> allOptions = listOptions();
+        Map<String, Object> result = new HashMap<>();
+        keys.stream()
+                .filter(key -> !allOptions.containsKey(key))
+                .forEach(key -> result.put(key, allOptions.get(key)));
+        return result;
+    }
+
+    /**
+     * 列出全部系统配置项，包括配置过的值和系统默认值
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> listOptions() {
+        // 优先查找缓存，如果没有则执行查询
+        return cacheStore.getAny(OPTION_KEY, Map.class).orElseGet(() -> {
+            List<Option> allOptions = listAll();
+            Set<String> ids = ServiceUtils.fetchIdOfDataCollections(allOptions, Option::getKey);
+
+            // 用户自定义的配置项（含系统配置项）
+            Map<String, Object> userOptionMap = ServiceUtils.convertToMap(allOptions, Option::getKey, opt -> {
+                String optKey = opt.getKey();
+                PropertyEnum propertyEnum = propertyEnumMap.get(optKey);
+                if (propertyEnum == null) {
+                    return opt.getValue();
+                }
+
+                return PropertyEnum.convertTo(opt.getValue(), propertyEnum);
+            });
+            HashMap<String, Object> result = new HashMap<>(userOptionMap);
+            // 未修改过的系统默认配置项
+            propertyEnumMap.keySet().stream()
+                    .filter(key -> !ids.contains(key))  // 滤除已包含的
+                    .forEach(key -> {
+                        PropertyEnum propertyEnum = propertyEnumMap.get(key);
+                        String defaultVal = propertyEnum.defaultValue();
+                        if (StringUtils.isBlank(defaultVal)) {
+                            return;
+                        }
+                        result.put(key, PropertyEnum.convertTo(defaultVal, propertyEnum));
+                    });
+            cacheStore.putAny(OPTION_KEY, result);  // 缓存整个 map
+            return result;
+        });
     }
 
     @Override
     public List<OptionDTO> listDTOs() {
-        return null;
+        List<OptionDTO> result = new LinkedList<>();
+        listOptions().forEach((key, val) -> result.add(new OptionDTO(key, val)));
+        return result;
     }
 
     @Override
     public Page<OptionSimpleDTO> pageDTOsBy(Pageable pageable, OptionQuery optionQuery) {
-        return null;
+        Assert.notNull(pageable, "Pageable 对象不能为 null");
+        Page<Option> optionPage = optionRepository.findAll(buildSpecByQuery(optionQuery), pageable);
+        return optionPage.map(this::convertToDTO);
+    }
+
+    @Override
+    public OptionSimpleDTO convertToDTO(Option option) {
+        Assert.notNull(option, "Option 不能为 null");
+
+        return new OptionSimpleDTO().convertFrom(option);
+    }
+
+    @NonNull
+    private Specification<Option> buildSpecByQuery(@NonNull OptionQuery optionQuery) {
+        Assert.notNull(optionQuery, "查询字段不能为 null");
+        return (root, query, builder) -> {
+            List<Predicate> predicates = new LinkedList<>();
+            if (optionQuery.getType() != null) {
+                // 关系语句：type=?
+                predicates.add(builder.equal(root.get("type"), optionQuery.getType()));
+            }
+            if (optionQuery.getKey() != null) {
+                // 关系语句 key LIKE %?% OR value LIKE %?%
+                String likeCondition = String.format("%%%s%%", StringUtils.strip(optionQuery.getKey()));
+                Predicate keyLike = builder.like(root.get("key"), likeCondition);
+                Predicate valLike = builder.like(root.get("value"), likeCondition);
+                predicates.add(builder.or(keyLike, valLike));
+            }
+            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
+        };
     }
 
     @Override
     public Option removePermanently(Integer id) {
-        return null;
+        Option removedOption = removeById(id);
+        publishOptionUpdateEvent();
+        return removedOption;
     }
 
     @Override
     public Object getByKeyOfNullable(String key) {
-        return null;
+        return getByKey(key).orElse(null);
     }
 
     @Override
     public Object getByKeyOfNonNull(String key) {
-        return null;
+        return getByKey(key).orElseThrow(() -> new MissingPropertyException("必须传递 key 参数"));
     }
 
     @Override
     public Object getByPropertyOfNullable(PropertyEnum property) {
-        return null;
+        return getByProperty(property).orElse(null);
     }
 
     @Override
     public Object getByPropertyOfNonNull(PropertyEnum property) {
-        return null;
+        Assert.notNull(property, "property 不能为 null");
+        return getByKeyOfNonNull(property.getValue());
     }
 
     @Override
     public Optional<Object> getByProperty(PropertyEnum property) {
-        return Optional.empty();
+        Assert.notNull(property, "property 不能为 null");
+        return getByKey(property.getValue());
     }
 
     @Override
     public <T> Optional<T> getByProperty(PropertyEnum property, Class<T> type) {
-        return Optional.empty();
+        Assert.notNull(property, "property 不能为 null");
+        return getByProperty(property).map(val -> PropertyEnum.convertTo(val.toString(), type));
     }
 
     @Override
     public <T> T getByPropertyOrDefault(PropertyEnum property, Class<T> type, T defaultValue) {
-        return null;
+        return getByProperty(property, type).orElse(defaultValue);
     }
 
     @Override
     public <T> T getByPropertyOrDefault(PropertyEnum property, Class<T> type) {
-        return null;
+        return getByProperty(property, type).orElse(property.defaultValue(type));
     }
 
     @Override
     public <T> T getByKeyOrDefault(String key, Class<T> valueType, T defaultValue) {
-        return null;
+        return getByKey(key, valueType).orElse(defaultValue);
     }
 
     @Override
     public <T> Optional<T> getByKey(String key, Class<T> valueType) {
-        return Optional.empty();
+        return getByKey(key).map(v -> PropertyEnum.convertTo(v.toString(), valueType));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<Object> getByKey(String key) {
+        Assert.hasText(key, "键不能为 null");
+        return Optional.ofNullable(listOptions().get(key));
     }
 
     @Override
     public <T extends Enum<T>> Optional<T> getEnumByProperty(PropertyEnum property, Class<T> valueType) {
-        return Optional.empty();
+        return getByProperty(property).map(v -> PropertyEnum.convertToEnum(v.toString(), valueType));
     }
 
     @Override
     public <T extends Enum<T>> T getEnumByPropertyOrDefault(PropertyEnum property, Class<T> valueType, T defaultValue) {
-        return null;
+        return getEnumByProperty(property, valueType).orElse(defaultValue);
     }
 
     @Override
-    public <T, E extends ValueEnum<T>> Optional<E> getValueEnumByPropertyOrDefault(PropertyEnum property, Class<T> valueType, Class<E> enumType) {
-        return Optional.empty();
+    public <T, E extends ValueEnum<T>> Optional<E> getValueEnumByProperty(PropertyEnum property, Class<T> valueType, Class<E> enumType) {
+        return getByProperty(property).map(v -> ValueEnum.valueToEnum(enumType, PropertyEnum.convertTo(v.toString(), valueType)));
     }
 
     @Override
-    public int getPostPageSize() {
-        return 0;
+    public <T, E extends ValueEnum<T>> E getValueEnumByPropertyOrDefault(PropertyEnum property, Class<T> valueType, Class<E> enumType, E defaultValue) {
+        return getValueEnumByProperty(property, valueType, enumType).orElse(defaultValue);
     }
 
-    @Override
-    public int getArchivesPageSize() {
-        return 0;
+    private void publishOptionUpdateEvent() {
+        flush();
+        cleanCache();
+        eventPublisher.publishEvent(new OptionUpdatedEvent(this));
     }
 
-    @Override
-    public int getResPageSize() {
-        return 0;
+    private void cleanCache() {
+        cacheStore.delete(OPTION_KEY);
     }
 }

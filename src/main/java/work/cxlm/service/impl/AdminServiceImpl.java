@@ -7,11 +7,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import work.cxlm.cache.AbstractStringCacheStore;
-import work.cxlm.cache.CacheStore;
-import work.cxlm.event.LogEvent;
+import work.cxlm.event.logger.LogEvent;
 import work.cxlm.exception.BadRequestException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.exception.ServiceException;
+import work.cxlm.mail.MailService;
 import work.cxlm.model.dto.StatisticDTO;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.enums.LogType;
@@ -41,13 +41,16 @@ public class AdminServiceImpl implements AdminService {
     private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
     private final AbstractStringCacheStore cacheStore;
+    private final MailService mailService;
 
     public AdminServiceImpl(UserService userService,
                             ApplicationEventPublisher eventPublisher,
-                            AbstractStringCacheStore cacheStore) {
+                            AbstractStringCacheStore cacheStore,
+                            MailService mailService) {
         this.userService = userService;
         this.eventPublisher = eventPublisher;
         this.cacheStore = cacheStore;
+        this.mailService = mailService;
     }
 
     @Override
@@ -125,12 +128,12 @@ public class AdminServiceImpl implements AdminService {
         cacheStore.putAny("code", code, 5, TimeUnit.MINUTES);
 
         String content = "您正在进行重置密码操作，如果不是本人操作，请尽快应对。重置验证码为【" + code + "】，五分钟有效";
-        // TODO: 发送邮件
+        mailService.sendTextMail(param.getEmail(), "MyFont：找回密码", content);
     }
 
     @Override
     public void resetPasswordByCode(ResetPasswordParam param) {
-
+        // TODO: HERE
     }
 
     @Override

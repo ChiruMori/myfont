@@ -1,4 +1,4 @@
-package work.cxlm.model;
+package work.cxlm.model.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

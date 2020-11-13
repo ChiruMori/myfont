@@ -1,4 +1,4 @@
-package work.cxlm.event;
+package work.cxlm.event.logger;
 
 import org.springframework.context.ApplicationEvent;
 import work.cxlm.model.enums.LogType;

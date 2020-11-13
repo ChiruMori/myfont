@@ -42,7 +42,7 @@ public interface PropertyEnum extends ValueEnum<String> {
     }
 
     /**
-     * 将字符串转化为制定的类型
+     * 将字符串转化为指定的类型
      *
      * @param value 字符串值
      * @param type  制定类的 Class 实例
@@ -68,7 +68,7 @@ public interface PropertyEnum extends ValueEnum<String> {
     }
 
     /**
-     * 将字符串转化为 PropertyEnum，不能转化时，返回字符串本身
+     * 将字符串转化为 PropertyEnum 指定的类型，不能转化时，返回字符串本身
      */
     @SuppressWarnings("unchecked, rawtypes")
     static Object convertTo(@NonNull String value, @NonNull PropertyEnum propertyEnum) {
@@ -121,7 +121,7 @@ public interface PropertyEnum extends ValueEnum<String> {
 
     static Map<String, PropertyEnum> getValuePropertyEnumType() {
         List<Class<? extends PropertyEnum>> classes = new LinkedList<>();
-        // TODO: 添加所有的 PropertyType
+        // TODO: 添加所有的系统配置项 PropertyType
         Map <String, PropertyEnum> result = new HashMap<>();
         classes.forEach(cls -> {
             PropertyEnum[] propertyEnums = cls.getEnumConstants();

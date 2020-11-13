@@ -7,6 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import work.cxlm.exception.NotFoundException;
+import work.cxlm.model.enums.ValueEnum;
+import work.cxlm.model.properties.PropertyEnum;
 import work.cxlm.repository.BaseRepository;
 
 
@@ -322,4 +324,5 @@ public abstract class AbstractCrudService<DOMAIN, ID> implements CrudService<DOM
     public void removeAll() {
         repository.deleteAll();
     }
+
 }

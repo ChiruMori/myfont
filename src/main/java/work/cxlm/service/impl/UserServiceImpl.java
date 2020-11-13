@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import work.cxlm.event.LogEvent;
+import work.cxlm.event.logger.LogEvent;
 import work.cxlm.event.UserUpdatedEvent;
 import work.cxlm.exception.BadRequestException;
 import work.cxlm.exception.ForbiddenException;

@@ -1,15 +1,17 @@
 package work.cxlm.mail;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.Assert;
 import work.cxlm.exception.EmailException;
+import work.cxlm.model.properties.EmailProperties;
+import work.cxlm.service.OptionService;
 
-import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -29,19 +31,16 @@ import java.util.concurrent.Executors;
 public abstract class AbstractMailService implements MailService {
 
     private static final int DEFAULT_POOL_SIZE = 5;
-
     private JavaMailSender sender;
     private MailProperties mailProperties;
     private String fromName;
     @Nullable
     private ExecutorService executorService;
 
-    @Value("${spring.mail.from}")
-    private String from;
+    protected final OptionService optionService;
 
-    @Resource
-    public void setSender(JavaMailSender sender) {
-        this.sender = sender;
+    protected AbstractMailService(OptionService optionService) {
+        this.optionService = optionService;
     }
 
     @NonNull
@@ -52,8 +51,25 @@ public abstract class AbstractMailService implements MailService {
         return executorService;
     }
 
+    public void setExecutorService(@Nullable ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
     /**
-     * Test connection with email server.
+     * 获得 MailSender
+     */
+    @NonNull
+    private synchronized JavaMailSender getMailSender() {
+        if (sender == null) {
+            // 设置 MailSender
+            sender = MailSenderFactory.getMailSender(getMailProperties());
+        }
+
+        return sender;
+    }
+
+    /**
+     * 测试 Email 服务器
      */
     @Override
     public void testConnection() {
@@ -69,27 +85,18 @@ public abstract class AbstractMailService implements MailService {
 
     /**
      * 发送模板邮件，需要同时传递回调函数
-     *
-     * @param callback mime message callback.
      */
     protected void sendMailTemplate(@Nullable Callback callback) {
         if (callback == null) {
             log.info("回调函数为空，终止发送");
             return;
         }
-
-        // create mime message helper
+        // 配置参数
         MimeMessageHelper messageHelper = new MimeMessageHelper(sender.createMimeMessage());
-
         try {
-            // set from-name
-            messageHelper.setFrom(getFromAddress());
-            // handle message set separately
+            messageHelper.setFrom(getFromAddress(sender));
             callback.handle(messageHelper);
-
-            // get mime message
             MimeMessage mimeMessage = messageHelper.getMimeMessage();
-            // send email
             sender.send(mimeMessage);
 
             log.info("发送邮件到 [{}] 成功, 主题: [{}], 数据: [{}]",
@@ -101,16 +108,22 @@ public abstract class AbstractMailService implements MailService {
         }
     }
 
-    private synchronized InternetAddress getFromAddress() throws UnsupportedEncodingException {
-        if (sender instanceof JavaMailSenderImpl) {
-            // get user name(email)
-            JavaMailSenderImpl mailSender = (JavaMailSenderImpl) sender;
+    /**
+     * 获取发件地址
+     */
+    private synchronized InternetAddress getFromAddress(@NonNull JavaMailSender sender) throws UnsupportedEncodingException {
+        Assert.notNull(sender, "Sender 不能为 null");
 
-            // build internet address
-            return new InternetAddress(mailSender.getUsername(), from, mailSender.getDefaultEncoding());
+        if (StringUtils.isBlank(fromName)) {
+            fromName = optionService.getByPropertyOfNonNull(EmailProperties.FROM_NAME).toString();
         }
 
-        throw new UnsupportedOperationException("Unsupported java mail sender: " + sender.getClass().getName());
+        if (sender instanceof JavaMailSenderImpl) {
+            // 获得用户名
+            JavaMailSenderImpl mailSender = (JavaMailSenderImpl) sender;
+            return new InternetAddress(mailSender.getUsername(), fromName, mailSender.getDefaultEncoding());
+        }
+        throw new UnsupportedOperationException("不支持的 Sender: " + sender.getClass().getName());
     }
 
     /**
@@ -122,23 +135,47 @@ public abstract class AbstractMailService implements MailService {
     protected void sendMailTemplate(boolean tryToAsync, @Nullable Callback callback) {
         ExecutorService executorService = getExecutorService();
         if (tryToAsync) {
-            // send mail asynchronously
+            // 异步发送
             executorService.execute(() -> sendMailTemplate(callback));
         } else {
-            // send mail synchronously
+            // 同步发送
             sendMailTemplate(callback);
         }
     }
 
     /**
-     * Message callback.
+     * 获得邮件参数
+     */
+    @NonNull
+    private synchronized MailProperties getMailProperties() {
+        if (mailProperties == null) {
+            MailProperties properties = new MailProperties(log.isDebugEnabled());
+            properties.setHost(optionService.getByPropertyOrDefault(EmailProperties.HOST, String.class));
+            properties.setPort(optionService.getByPropertyOrDefault(EmailProperties.SSL_PORT, Integer.class));
+            properties.setUsername(optionService.getByPropertyOrDefault(EmailProperties.USERNAME, String.class));
+            properties.setPassword(optionService.getByPropertyOrDefault(EmailProperties.PASSWORD, String.class));
+            properties.setProtocol(optionService.getByPropertyOrDefault(EmailProperties.PROTOCOL, String.class));
+            mailProperties = properties;
+        }
+        return mailProperties;
+    }
+
+    /**
+     * 列出全部邮箱配置
+     */
+    protected void clearCache() {
+        sender = null;
+        fromName = null;
+        mailProperties = null;
+        log.debug("清除全部的 Mail 缓存项");
+    }
+
+    /**
+     * 消息回调接口
      */
     protected interface Callback {
         /**
-         * Handle message set.
-         *
-         * @param messageHelper mime message helper
-         * @throws Exception if something goes wrong
+         * 处理消息
          */
         void handle(@NonNull MimeMessageHelper messageHelper) throws Exception;
     }

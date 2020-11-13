@@ -3,7 +3,7 @@ package work.cxlm.listener.logger;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import work.cxlm.event.LogEvent;
+import work.cxlm.event.logger.LogEvent;
 import work.cxlm.model.entity.Log;
 import work.cxlm.service.LogService;
 

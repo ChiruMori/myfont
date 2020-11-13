@@ -19,5 +19,5 @@ public class OptionDTO implements OutputConverter<OptionDTO, Option> {
 
     private String key;
 
-    private String value;
+    private Object value;
 }

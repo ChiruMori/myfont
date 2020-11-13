@@ -4,7 +4,7 @@ import lombok.Data;
 import work.cxlm.model.enums.OptionType;
 
 /**
- * 查询选项的参数
+ * 查询配置项的参数
  * created 2020/11/9 20:19
  *
  * @author ryanwang
