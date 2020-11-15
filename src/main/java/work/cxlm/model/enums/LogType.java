@@ -8,6 +8,11 @@ package work.cxlm.model.enums;
 public enum LogType implements ValueEnum<Integer> {
 
     /**
+     * 系统完成初始化（安装）
+     */
+    SYSTEM_INSTALLED(99),
+
+    /**
      * 发布了新的字
      */
     KANJI_PUBLISHED(0),

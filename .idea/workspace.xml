@@ -22,30 +22,50 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5ecce63-35d8-41e3-abb0-4ec8e21f089c" name="Default Changelist" comment="缓存模块完成（除 Redis），全局配置项模块开始">
-      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/event/option/OptionUpdatedEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/exception/MissingPropertyException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailSenderFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/properties/EmailProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="e5ecce63-35d8-41e3-abb0-4ec8e21f089c" name="Default Changelist" comment="系统配置项、邮件模块">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/annotation/DisableOnCondition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/aspect/DisableOnConditionAspect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontRequestMappingHandlerMapping.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/PageJacksonSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/SwaggerConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/WebMvcAutoConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/admin/api/AdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/admin/api/InstallController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/admin/api/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/core/CommonResultControllerAdvice.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/core/ControllerExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/core/ControllerLogAop.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/exception/AuthenticationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/UserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/enums/Mode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/enums/support/StringToEnumConverterFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/InstallParam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/PasswordParam.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/properties/PrimaryProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/support/BaseResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/context/SecurityContextHolder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/resolver/AuthenticationArgumentResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/event/LogEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/event/logger/LogEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/listener/logger/LogEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/listener/logger/LogEventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/cache/lock/CacheLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/cache/lock/CacheLock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/config/MyFontProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/AttachmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/controller/admin/api/AttachmentController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/AbstractMailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/AbstractMailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/DiscardMailServiceImplDiscard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/DiscardMailServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/mail/MailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/OptionSimpleDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/OptionSimpleDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/OptionDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/dto/OptionDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/OptionQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/params/OptionQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/enums/LogType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/enums/LogType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/properties/PropertyEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/properties/PropertyEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/OptionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/OptionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/base/AbstractCrudService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/base/AbstractCrudService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/model/support/MyFontConst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/model/support/MyFontConst.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/security/token/AuthToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/security/token/AuthToken.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/AdminServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/OptionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/OptionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/MyFontUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/MyFontUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/ValidationUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/work/cxlm/utils/ValidationUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/work/cxlm/mail/MailTester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/work/cxlm/mail/MailTester.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,9 +113,16 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -106,15 +133,18 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.ignored.files" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="work.cxlm.mail" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\cxlm\works\Java\try68_myfont\src\main\resources" />
+    </key>
   </component>
-  <component name="RunManager" selected="JUnit.CacheStoreTest">
+  <component name="RunManager" selected="Spring Boot.MyFontApplication">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -163,6 +193,8 @@
     <configuration name="MyFontApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="myfont.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="work.cxlm.MyFontApplication" />
+      <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -180,6 +212,10 @@
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SshConsoleOptionsProvider">
+    <option name="myEncoding" value="UTF-8" />
+    <option name="myConnectionType" value="NONE" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="e5ecce63-35d8-41e3-abb0-4ec8e21f089c" name="Default Changelist" comment="" />
@@ -191,7 +227,12 @@
       <workItem from="1604884058845" duration="4839000" />
       <workItem from="1604889306849" duration="27316000" />
       <workItem from="1605004025039" duration="30478000" />
-      <workItem from="1605254318772" duration="14171000" />
+      <workItem from="1605254318772" duration="14938000" />
+      <workItem from="1605327605235" duration="20495000" />
+      <workItem from="1605401569080" duration="21426000" />
+      <workItem from="1605427688721" duration="566000" />
+      <workItem from="1605428267198" duration="6000" />
+      <workItem from="1605428292701" duration="7107000" />
     </task>
     <task id="LOCAL-00001" summary="缓存模块完成（除 Redis），全局配置项模块开始">
       <created>1604933891968</created>
@@ -200,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604933891968</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="系统配置项、邮件模块">
+      <created>1605282427895</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1605282427895</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -211,7 +259,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -220,76 +274,102 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="缓存模块完成（除 Redis），全局配置项模块开始" />
-    <option name="LAST_COMMIT_MESSAGE" value="缓存模块完成（除 Redis），全局配置项模块开始" />
+    <MESSAGE value="系统配置项、邮件模块" />
+    <MESSAGE value="用户、系统核心（验证、配置等）、文档、初始化模块" />
+    <option name="LAST_COMMIT_MESSAGE" value="用户、系统核心（验证、配置等）、文档、初始化模块" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604847951069">
+    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605427844722">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604847951069" />
+    <state x="219" y="58" width="1138" height="707" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605427844722" />
     <state x="93" y="93" width="1350" height="638" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1604848384225">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848384225" />
-    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser" timestamp="1605260539447">
+    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser" timestamp="1605424433646">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605260539447" />
+    <state x="478" y="40" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605424433646" />
     <state x="196" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1604904674796">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="196" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604904674796" />
-    <state width="1483" height="228" key="GridCell.Tab.0.bottom" timestamp="1604848650639">
+    <state x="742" y="282" width="607" height="498" key="#xdebugger.evaluate" timestamp="1605434960723">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.0.center" timestamp="1604848650639">
+    <state x="742" y="282" width="607" height="498" key="#xdebugger.evaluate/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434960723" />
+    <state width="1483" height="206" key="GridCell.Tab.0.bottom" timestamp="1605434943378">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.0.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.0.left" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434943378" />
+    <state width="1483" height="206" key="GridCell.Tab.0.center" timestamp="1605434943378">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.0.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.0.right" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.0.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434943378" />
+    <state width="1483" height="206" key="GridCell.Tab.0.left" timestamp="1605434943377">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.0.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.1.bottom" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.0.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434943377" />
+    <state width="1483" height="206" key="GridCell.Tab.0.right" timestamp="1605434943378">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.1.center" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.0.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434943378" />
+    <state width="1483" height="206" key="GridCell.Tab.1.bottom" timestamp="1605434950620">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.1.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.1.left" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434950620" />
+    <state width="1483" height="206" key="GridCell.Tab.1.center" timestamp="1605434950620">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.1.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state width="1483" height="228" key="GridCell.Tab.1.right" timestamp="1604848650639">
+    <state width="1483" height="206" key="GridCell.Tab.1.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434950620" />
+    <state width="1483" height="206" key="GridCell.Tab.1.left" timestamp="1605434950620">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="228" key="GridCell.Tab.1.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604848650639" />
-    <state x="153" y="0" key="SettingsEditor" timestamp="1604888975374">
+    <state width="1483" height="206" key="GridCell.Tab.1.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434950620" />
+    <state width="1483" height="206" key="GridCell.Tab.1.right" timestamp="1605434950620">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="153" y="0" key="SettingsEditor/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604888975374" />
+    <state width="1483" height="206" key="GridCell.Tab.1.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434950620" />
+    <state width="1483" height="206" key="GridCell.Tab.2.bottom" timestamp="1605434942869">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="206" key="GridCell.Tab.2.bottom/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434942869" />
+    <state width="1483" height="206" key="GridCell.Tab.2.center" timestamp="1605434942868">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="206" key="GridCell.Tab.2.center/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434942868" />
+    <state width="1483" height="206" key="GridCell.Tab.2.left" timestamp="1605434942868">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="206" key="GridCell.Tab.2.left/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434942868" />
+    <state width="1483" height="206" key="GridCell.Tab.2.right" timestamp="1605434942869">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="206" key="GridCell.Tab.2.right/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605434942869" />
+    <state x="153" y="0" key="SettingsEditor" timestamp="1605427984923">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="153" y="0" key="SettingsEditor/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605427984923" />
     <state x="423" y="91" width="675" height="655" key="StructurePopup" timestamp="1605173966359">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="423" y="91" width="675" height="655" key="StructurePopup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605173966359" />
-    <state x="261" y="80" key="Vcs.Push.Dialog.v2" timestamp="1604933910776">
+    <state x="261" y="80" key="Vcs.Push.Dialog.v2" timestamp="1605282467419">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="261" y="80" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604933910776" />
+    <state x="261" y="80" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605282467419" />
+    <state x="93" y="93" width="1350" height="638" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1605364631875">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="93" y="93" width="1350" height="638" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605364631875" />
     <state x="341" y="183" key="run.anything.popup" timestamp="1604885135037">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="341" y="183" key="run.anything.popup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1604885135037" />
-    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup" timestamp="1605169247060">
+    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup" timestamp="1605432875617">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605169247060" />
+    <state x="347" y="0" width="840" height="1034" key="search.everywhere.popup/0.0.1536.824/1920.-848.864.1496@0.0.1536.824" timestamp="1605432875617" />
   </component>
 </project>

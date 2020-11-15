@@ -22,8 +22,8 @@ public class MailTester {
     public void testSendSampleEmail() throws InterruptedException {
         mailService.testConnection();
         mailService.sendTextMail("13190492195@163.com", "这是一封测试邮件", "测试邮件内容，简单文本邮件");
-        Assert.isTrue(mailService instanceof DiscardAbstractMailService);
-        DiscardAbstractMailService service = (DiscardAbstractMailService) mailService;
+        Assert.isTrue(mailService instanceof AbstractMailService);
+        AbstractMailService service = (AbstractMailService) mailService;
         final ExecutorService pool = service.getExecutorService();
         pool.awaitTermination(1, TimeUnit.MINUTES);
         System.out.println("邮件发送结束");

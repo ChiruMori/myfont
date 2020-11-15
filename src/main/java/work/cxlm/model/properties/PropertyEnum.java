@@ -45,7 +45,7 @@ public interface PropertyEnum extends ValueEnum<String> {
      * 将字符串转化为指定的类型
      *
      * @param value 字符串值
-     * @param type  制定类的 Class 实例
+     * @param type  指定类的 Class 实例
      * @param <T>   指定类的泛型，仅支持基本类型的包装类（含 String，不含 char）
      */
     @SuppressWarnings("all")
@@ -56,9 +56,12 @@ public interface PropertyEnum extends ValueEnum<String> {
         for (Class<?> supportedClass : SUPPORTED_CLASSES) {
             if (type.isAssignableFrom(supportedClass)) {
                 try {
-                    Method valueMethod = supportedClass.getMethod("valueOf");
+                    Method valueMethod = supportedClass.getMethod("valueOf", String.class);
                     return (T) valueMethod.invoke(null, value);  // 通过反射调用 valueOf 方法
                 } catch (ReflectiveOperationException e) {
+                    if (type.isAssignableFrom(String.class)) {
+                        return (T) value;
+                    }
                     throw new UnsupportedOperationException("转化失败，试图转化为：" + supportedClass + "，得到的值为：" + value);
                 }
             }
@@ -121,7 +124,9 @@ public interface PropertyEnum extends ValueEnum<String> {
 
     static Map<String, PropertyEnum> getValuePropertyEnumType() {
         List<Class<? extends PropertyEnum>> classes = new LinkedList<>();
-        // TODO: 添加所有的系统配置项 PropertyType
+        // 添加系统配置，增加配置类时需要在这里进行注册
+        classes.add(EmailProperties.class);
+        classes.add(PrimaryProperties.class);
         Map <String, PropertyEnum> result = new HashMap<>();
         classes.forEach(cls -> {
             PropertyEnum[] propertyEnums = cls.getEnumConstants();

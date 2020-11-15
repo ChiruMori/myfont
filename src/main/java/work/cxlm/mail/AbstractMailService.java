@@ -73,10 +73,11 @@ public abstract class AbstractMailService implements MailService {
      */
     @Override
     public void testConnection() {
-        if (sender instanceof JavaMailSenderImpl) {
-            JavaMailSenderImpl mailSender = (JavaMailSenderImpl) sender;
+        JavaMailSender mailSender = getMailSender();
+        if (mailSender instanceof JavaMailSenderImpl) {
+            JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) mailSender;
             try {
-                mailSender.testConnection();
+                javaMailSender.testConnection();
             } catch (MessagingException e) {
                 throw new EmailException("无法连接到邮箱服务器，请检查邮箱配置.[" + e.getMessage() + "]", e);
             }
@@ -91,13 +92,14 @@ public abstract class AbstractMailService implements MailService {
             log.info("回调函数为空，终止发送");
             return;
         }
+        JavaMailSender mailSender = getMailSender();
         // 配置参数
         MimeMessageHelper messageHelper = new MimeMessageHelper(sender.createMimeMessage());
         try {
             messageHelper.setFrom(getFromAddress(sender));
             callback.handle(messageHelper);
             MimeMessage mimeMessage = messageHelper.getMimeMessage();
-            sender.send(mimeMessage);
+            mailSender.send(mimeMessage);
 
             log.info("发送邮件到 [{}] 成功, 主题: [{}], 数据: [{}]",
                     Arrays.toString(mimeMessage.getAllRecipients()),

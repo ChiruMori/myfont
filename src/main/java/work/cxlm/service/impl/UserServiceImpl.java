@@ -126,12 +126,16 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     public void setPassword(User user, String plainPassword) {
-
+        Assert.notNull(user, "用户不能为 null");
+        Assert.hasText(plainPassword, "密码不能为空");
+        // 使用 MD5 加密
+        user.setPassword(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
     }
 
     @Override
     public boolean verifyUser(String username, String email) {
-        return false;
+        User nowUser = getCurrentUser().orElseThrow(() -> new BadRequestException("无有效用户"));
+        return nowUser.getUsername().equals(username) && nowUser.getEmail().equals(email);
     }
 
     @Override

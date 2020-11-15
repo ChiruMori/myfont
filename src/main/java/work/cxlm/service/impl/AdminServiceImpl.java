@@ -4,11 +4,15 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import work.cxlm.cache.AbstractStringCacheStore;
+import work.cxlm.config.MyFontProperties;
 import work.cxlm.event.logger.LogEvent;
 import work.cxlm.exception.BadRequestException;
+import work.cxlm.exception.MissingPropertyException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.exception.ServiceException;
 import work.cxlm.mail.MailService;
@@ -23,6 +27,7 @@ import work.cxlm.security.token.AuthToken;
 import work.cxlm.security.util.SecurityUtils;
 import work.cxlm.service.AdminService;
 import work.cxlm.service.UserService;
+import work.cxlm.utils.MyFontUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +37,6 @@ import java.util.concurrent.TimeUnit;
  * @author johnniang
  * @author ryanwang
  * @author cxlm
- * TODO IMPLEMENT THIS
  */
 @Service
 @Slf4j
@@ -133,16 +137,69 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void resetPasswordByCode(ResetPasswordParam param) {
-        // TODO: HERE
+        if (StringUtils.isEmpty(param.getCode())) {
+            throw new MissingPropertyException("验证码不能为空");
+        }
+
+        if (StringUtils.isEmpty(param.getPassword())) {
+            throw new MissingPropertyException("密码不能为空");
+        }
+
+        if (!userService.verifyUser(param.getUsername(), param.getEmail())) {
+            throw new BadRequestException("用户名、邮箱验证失败");
+        }
+
+        String code = cacheStore.getAny("code", String.class).orElseThrow(() -> new BadRequestException("请首先获取验证码"));
+        if (!code.equals(param.getCode())) {
+            throw new BadRequestException("验证码错误");
+        }
+
+        // 更新用户名密码，删除缓存的验证码
+        User nowUser = userService.getCurrentUser().orElseThrow(() -> new BadRequestException("请先初始化系统"));
+        userService.setPassword(nowUser, param.getPassword());
+        userService.update(nowUser);
+        cacheStore.delete("code");
     }
 
     @Override
     public StatisticDTO getCount() {
-        return null;
+        StatisticDTO res = new StatisticDTO();
+        // TODO: 统计字体相关数据（调用 FontService 相关过程统计数量）
+        res.setAttachCount(0);
+        res.setCreatedFontCount(0);
+        res.setFontCount(0);
+        res.setKanjiCount(0);
+        return res;
     }
 
     @Override
+    @NonNull
     public AuthToken refreshToken(String refreshToken) {
-        return null;
+        Assert.hasText(refreshToken, "RefreshToken 不能为空");
+        Integer uid = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), Integer.class)
+                .orElseThrow(() -> new BadRequestException("登录状态已失效，请重新登录"));
+        // 清除缓存的 Token
+        User user = userService.getById(uid);
+        cacheStore.getAny(SecurityUtils.buildAccessTokenKey(user), String.class)
+                .ifPresent(accessToken -> cacheStore.delete(SecurityUtils.buildAccessTokenKey(accessToken)));
+        cacheStore.delete(SecurityUtils.buildRefreshTokenKey(refreshToken));
+        cacheStore.delete(SecurityUtils.buildAccessTokenKey(user));
+        cacheStore.delete(SecurityUtils.buildRefreshTokenKey(user));
+        // build auth
+        return buildAuthToken(user);
+    }
+
+    @NonNull
+    private AuthToken buildAuthToken(User user) {
+        Assert.notNull(user, "用户不能为 Null");
+        AuthToken authToken = new AuthToken();
+
+        authToken.setAccessToken(MyFontUtils.randomUUIDWithoutDash());
+        authToken.setExpiredIn(ACCESS_TOKEN_EXPIRED_SECONDS);
+        authToken.setRefreshToken(MyFontUtils.randomUUIDWithoutDash());
+
+        cacheStore.putAny(SecurityUtils.buildAccessTokenKey(authToken.getAccessToken()), user.getId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+        cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(authToken.getRefreshToken()), user.getId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
+        return authToken;
     }
 }

@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id "java"
     id "org.springframework.boot" version "2.3.4.RELEASE"
@@ -5,12 +7,19 @@ plugins {
     id "checkstyle"
 }
 
-group "ork.cxlm"
+group "work.cxlm"
 version "0.1-SNAPSHOT"
+description "my font, a system to manage your font system"
 
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+processResources {
+    filesMatching('application.yml') {
+        filter ReplaceTokens, tokens: [app_version: project.property('version')]
+    }
 }
 
 configurations {
@@ -28,6 +37,7 @@ ext {
     commonsLangVersion = "3.10"
     levelDbVersion = "0.12"
     jedisVersion = "3.3.0"
+    swaggerVersion = "2.9.2"
 }
 
 dependencies {
@@ -44,6 +54,8 @@ dependencies {
     implementation "cn.hutool:hutool-crypto:$hutoolVersion"
     implementation "cn.hutool:hutool-extra:$hutoolVersion"
     implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
+    implementation "io.springfox:springfox-swagger2:$swaggerVersion"
+    implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
 
     // 缓存
     // LevelDB是 Google 开源的持久化 KV 单机数据库，具有很高的随机写、顺序读写性能，解决了 Redis 双写导致的一系列问题

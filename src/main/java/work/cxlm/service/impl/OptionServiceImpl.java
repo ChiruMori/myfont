@@ -43,9 +43,6 @@ import java.util.*;
 @Service
 public class OptionServiceImpl extends AbstractCrudService<Option, Integer> implements OptionService {
 
-    // TODO: 确保下面两个东西没用后移除
-    private final MyFontProperties myFontProperties;
-    private final ApplicationContext applicationContext;
     private final OptionRepository optionRepository;
     private final AbstractStringCacheStore cacheStore;
     private final ApplicationEventPublisher eventPublisher;
@@ -53,16 +50,12 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     private final Map<String, PropertyEnum> propertyEnumMap;
 
     protected OptionServiceImpl(OptionRepository optionRepository,
-                                ApplicationContext applicationContext,
                                 AbstractStringCacheStore cacheStore,
-                                ApplicationEventPublisher eventPublisher,
-                                MyFontProperties myFontProperties) {
+                                ApplicationEventPublisher eventPublisher) {
         super(optionRepository);
         this.optionRepository = optionRepository;
-        this.applicationContext = applicationContext;
         this.cacheStore = cacheStore;
         this.eventPublisher = eventPublisher;
-        this.myFontProperties = myFontProperties;
 
         propertyEnumMap = Collections.unmodifiableMap(PropertyEnum.getValuePropertyEnumType());
     }

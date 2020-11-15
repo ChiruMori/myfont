@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import java.util.UUID;
+
 /**
  * created 2020/10/28 17:21
  *
@@ -110,7 +112,8 @@ public class MyFontUtils {
 
     /**
      * 确保字符串包含指定前缀，如果已包含则不变，否则添加前缀
-     * @param str 源字符串
+     *
+     * @param str    源字符串
      * @param prefix 前缀
      */
     @NonNull
@@ -123,7 +126,8 @@ public class MyFontUtils {
 
     /**
      * 确保字符串包含指定后缀，如果已包含则不变，否则添加后缀
-     * @param str 源字符串
+     *
+     * @param str    源字符串
      * @param suffix 后缀
      */
     @NonNull
@@ -132,5 +136,35 @@ public class MyFontUtils {
         Assert.hasText(suffix, "后缀字符串必须包含内容");
 
         return StringUtils.removeEnd(str, suffix) + suffix;
+    }
+
+    /**
+     * 确保字符串被参数 bothFix 包围
+     *
+     * @param string 源字符串
+     * @param bothFix 前后缀
+     */
+    @NonNull
+    public static String ensureBoth(@NonNull String string, @NonNull String bothFix) {
+        return ensureBoth(string, bothFix, bothFix);
+    }
+
+    /**
+     * 确保字符串包含指定前后缀，如果已包含则不变，否则添加后缀
+     *
+     * @param string 源字符串
+     * @param prefix 前缀
+     * @param suffix 后缀
+     */
+    @NonNull
+    public static String ensureBoth(@NonNull String string, @NonNull String prefix, @NonNull String suffix) {
+        return ensureSuffix(ensurePrefix(string, prefix), suffix);
+    }
+
+    /**
+     * 生成没有横线连接的 UUID
+     */
+    public static String randomUUIDWithoutDash() {
+        return StringUtils.remove(UUID.randomUUID().toString(), '-');
     }
 }

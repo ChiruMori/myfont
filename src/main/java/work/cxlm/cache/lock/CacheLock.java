@@ -53,5 +53,5 @@ public @interface CacheLock {
     /**
      * 是否回溯请求信息
      */
-    boolean traceRequest();
+    boolean traceRequest() default false;
 }

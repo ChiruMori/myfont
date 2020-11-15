@@ -2,6 +2,8 @@ server:
   port: 8520
 
 spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   datasource: # 数据库配置
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,10 +13,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-  mail:
-    host: smtp.ym.163.com
-    port: 25
-    username: cxlm@cxlm.work
-    password: "**************"
-    from: "MyFont 后台管理"
+    show-sql: false
+  profiles:
+    active: dev
+#  mail:
+#    host: smtp.ym.163.com
+#    port: 465
+#    username: cxlm@cxlm.work
+#    password: "**************"
+#    from: "MyFont 后台管理"
+
+my-font:
+#  download-timeout: 5m
+  cache: level
+  version: @app_version@

@@ -1,4 +1,4 @@
-package work.cxlm.controller;
+package work.cxlm.controller.admin.api;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

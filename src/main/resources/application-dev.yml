@@ -1,0 +1,22 @@
+logging:
+  level:
+    worl.cxlm: DEBUG
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.hibernate.type.descriptor.sql.BasicExtractor: INFO
+  file:
+    path: ${user.home}/halo-dev/logs
+
+spring:
+  jpa:
+    show-sql: true
+  cache:
+    type: none
+
+my-font:
+  doc-disabled: false
+  production-env: false
+#  auth-enabled: true
+  mode: development
+  workDir: ${user.home}/my-font-dev/
+  cache: memory
