@@ -1,0 +1,10 @@
+${AnsiColor.BLUE}
+
+    ` |   `  |    ` ____/
+    . |   .  |     /
+   /  |  /   |    ____/
+__/  ___/  __| __/
+${AnsiColor.BLACK}
+归去来兮！请息交以绝游。世与我而相违，复驾言兮焉求？
+${AnsiColor.BRIGHT_YELLOW}
+Version: ${application.version}
