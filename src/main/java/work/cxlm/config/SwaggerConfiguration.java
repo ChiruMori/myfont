@@ -22,7 +22,7 @@ import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import work.cxlm.model.entity.User;
-import work.cxlm.model.support.MyFontConst;
+import work.cxlm.model.support.QfzsConst;
 import work.cxlm.security.support.UserDetail;
 
 import java.lang.reflect.Type;
@@ -45,7 +45,7 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 @Slf4j
 public class SwaggerConfiguration {
 
-    private final MyFontProperties myFontProperties;
+    private final QfzsProperties qfzsProperties;
 
     private final List<ResponseMessage> globalResponses = Arrays.asList(
             new ResponseMessageBuilder().code(200).message("Success").build(),
@@ -55,14 +55,14 @@ public class SwaggerConfiguration {
             new ResponseMessageBuilder().code(404).message("Not found").build(),
             new ResponseMessageBuilder().code(500).message("Internal server error").build());
 
-    public SwaggerConfiguration(MyFontProperties myFontProperties) {
-        this.myFontProperties = myFontProperties;
+    public SwaggerConfiguration(QfzsProperties qfzsProperties) {
+        this.qfzsProperties = qfzsProperties;
     }
 
     // 非管理员功能 API 文档
     @Bean
     public Docket myFontDefaultDocket() {
-        if (myFontProperties.isDocDisabled()) {
+        if (qfzsProperties.isDocDisabled()) {
             log.debug("文档未开启");
         }
 
@@ -71,13 +71,13 @@ public class SwaggerConfiguration {
                 "/font/api/content/**")
                 .securitySchemes(contentApiKeys())
                 .securityContexts(contentSecurityContext())
-                .enable(!myFontProperties.isDocDisabled());
+                .enable(!qfzsProperties.isDocDisabled());
     }
 
     // 管理员功能 API 文档
     @Bean
     public Docket myFontAdminApi() {
-        if (myFontProperties.isDocDisabled()) {
+        if (qfzsProperties.isDocDisabled()) {
             log.debug("文档未开启");
         }
 
@@ -86,7 +86,7 @@ public class SwaggerConfiguration {
                 "/font/api/admin/**")
                 .securitySchemes(adminApiKeys())
                 .securityContexts(adminSecurityContext())
-                .enable(!myFontProperties.isDocDisabled());
+                .enable(!qfzsProperties.isDocDisabled());
     }
 
     @Bean
@@ -124,8 +124,8 @@ public class SwaggerConfiguration {
 
     private List<ApiKey> adminApiKeys() {
         return Arrays.asList(
-                new ApiKey("Token from header", MyFontConst.ADMIN_TOKEN_HEADER_NAME, In.HEADER.name()),
-                new ApiKey("Token from query", MyFontConst.ADMIN_TOKEN_QUERY_NAME, In.QUERY.name())
+                new ApiKey("Token from header", QfzsConst.ADMIN_TOKEN_HEADER_NAME, In.HEADER.name()),
+                new ApiKey("Token from query", QfzsConst.ADMIN_TOKEN_QUERY_NAME, In.QUERY.name())
         );
     }
 
@@ -140,8 +140,8 @@ public class SwaggerConfiguration {
 
     private List<ApiKey> contentApiKeys() {
         return Arrays.asList(
-                new ApiKey("Access key from header", MyFontConst.API_ACCESS_KEY_HEADER_NAME, In.HEADER.name()),
-                new ApiKey("Access key from query", MyFontConst.API_ACCESS_KEY_QUERY_NAME, In.QUERY.name())
+                new ApiKey("Access key from header", QfzsConst.API_ACCESS_KEY_HEADER_NAME, In.HEADER.name()),
+                new ApiKey("Access key from query", QfzsConst.API_ACCESS_KEY_QUERY_NAME, In.QUERY.name())
         );
     }
 
@@ -170,7 +170,7 @@ public class SwaggerConfiguration {
         return new ApiInfoBuilder()
                 .title("MyFont API 文档")
                 .description("描述 MyFont 后端 API 接口的说明文档")
-                .version(myFontProperties.getVersion())
+                .version(qfzsProperties.getVersion())
                 .termsOfServiceUrl("https://github.com/first-snow/myfont")
                 .contact(new Contact("myfont", "https://github.com/first-snow/myfont/issues", "cxlm@cxlm.work"))
                 .license("GNU General Public License v3.0")

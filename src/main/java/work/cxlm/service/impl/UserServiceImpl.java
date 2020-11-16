@@ -17,8 +17,8 @@ import work.cxlm.model.params.UserParam;
 import work.cxlm.repository.UserRepository;
 import work.cxlm.service.UserService;
 import work.cxlm.service.base.AbstractCrudService;
-import work.cxlm.utils.MyFontDateUtils;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.utils.QfzsDateUtils;
+import work.cxlm.utils.QfzsUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -78,31 +78,9 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public User updatePassword(String oldPassword, String newPassword, Integer userId) {
-        Assert.hasText(oldPassword, "oldPassword 不能为空");
-        Assert.hasText(newPassword, "newPassword 不能为空");
-        Assert.notNull(userId, "userId 不能为 null");
-
-        if (oldPassword.equals(newPassword)) {
-            throw new BadRequestException("新密码和旧密码不能相同");
-        }
-
-        User targetUser = getById(userId);
-        setPassword(targetUser, newPassword);
-
-        User updatedUser = update(targetUser);
-
-        eventPublisher.publishEvent(new LogEvent(this, updatedUser.getId().toString(), LogType.PWD_UPDATED,
-                MyFontUtils.desensitize(oldPassword, 2, 1)));
-
-        return updatedUser;
-    }
-
-    @Override
     public User createBy(UserParam userParam) {
         Assert.notNull(userParam, "用户参数对象不能为 null");
         User user = userParam.convertTo();
-        setPassword(user, userParam.getPassword());
         return create(user);
     }
 
@@ -110,26 +88,12 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     public void mustNotExpire(User user) {
         Assert.notNull(user, "User 不能为 null");
 
-        Date now = MyFontDateUtils.now();
+        Date now = QfzsDateUtils.now();
         if (user.getExpireTime() != null && user.getExpireTime().after(now)) {
             // 未到达停用时间
             long seconds = TimeUnit.MILLISECONDS.toSeconds(user.getExpireTime().getTime() - now.getTime());
-            throw new ForbiddenException("账号已被停用，请" + MyFontUtils.timeFormat(seconds) + "后重试").setErrorData(seconds);
+            throw new ForbiddenException("账号已被停用，请" + QfzsUtils.timeFormat(seconds) + "后重试").setErrorData(seconds);
         }
-    }
-
-    @Override
-    public boolean passwordMatch(User user, String plainPassword) {
-        Assert.notNull(user, "用户必不能为 null");
-        return !StringUtils.isBlank(plainPassword) && BCrypt.checkpw(plainPassword, user.getPassword());
-    }
-
-    @Override
-    public void setPassword(User user, String plainPassword) {
-        Assert.notNull(user, "用户不能为 null");
-        Assert.hasText(plainPassword, "密码不能为空");
-        // 使用 MD5 加密
-        user.setPassword(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
     }
 
     @Override

@@ -2,7 +2,6 @@ package work.cxlm.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import work.cxlm.cache.AbstractStringCacheStore;
-import work.cxlm.config.MyFontProperties;
 import work.cxlm.event.option.OptionUpdatedEvent;
 import work.cxlm.exception.MissingPropertyException;
 import work.cxlm.model.dto.OptionSimpleDTO;

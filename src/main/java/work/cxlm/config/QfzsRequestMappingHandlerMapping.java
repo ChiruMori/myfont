@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import work.cxlm.model.support.MyFontConst;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.model.support.QfzsConst;
+import work.cxlm.utils.QfzsUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,22 +17,22 @@ import java.util.Set;
  * @author Chiru
  */
 @Slf4j
-public class MyFontRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
+public class QfzsRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
     private final Set<String> blackPatterns = new HashSet<>();
 
     private final PathMatcher pathMatcher;
 
-    private final MyFontProperties myFontProperties;
+    private final QfzsProperties qfzsProperties;
 
-    public MyFontRequestMappingHandlerMapping(MyFontProperties myFontProperties) {
-        this.myFontProperties = myFontProperties;
+    public QfzsRequestMappingHandlerMapping(QfzsProperties qfzsProperties) {
+        this.qfzsProperties = qfzsProperties;
         initBlackPatterns();
         pathMatcher = new AntPathMatcher();
     }
 
     private void initBlackPatterns() {
-        String uploadUrlPattern = MyFontUtils.ensureBoth(myFontProperties.getUploadUrlPrefix(), MyFontConst.URL_SEPARATOR) + "**";
+        String uploadUrlPattern = QfzsUtils.ensureBoth(qfzsProperties.getUploadUrlPrefix(), QfzsConst.URL_SEPARATOR) + "**";
 
         blackPatterns.add("/font/js/**");
         blackPatterns.add("/font/images/**");

@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import work.cxlm.config.MyFontProperties;
-import work.cxlm.utils.MyFontDateUtils;
+import work.cxlm.config.QfzsProperties;
+import work.cxlm.utils.QfzsDateUtils;
 
 import java.util.Date;
 import java.util.Optional;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
 
-    protected MyFontProperties myFontProperties;
+    protected QfzsProperties qfzsProperties;
 
     /**
      * 通过缓存键获取被包装（CacheWrapper）的缓存值
@@ -53,7 +53,7 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         Assert.notNull(key, "缓存键不能为 null");
 
         return gerInternal(key).map(cacheWrapper -> {
-            if (cacheWrapper.getExpireAt() != null && cacheWrapper.getExpireAt().before(MyFontDateUtils.now())) {
+            if (cacheWrapper.getExpireAt() != null && cacheWrapper.getExpireAt().before(QfzsDateUtils.now())) {
                 log.warn("缓存已过期：[{}]", key);
                 delete(key);  // 惰性删除
                 return null;
@@ -90,11 +90,11 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         Assert.notNull(value, "缓存值不能为 null");
         Assert.isTrue(timeout >= 0, "缓存过期时间不能小于零");
 
-        Date now = MyFontDateUtils.now();
+        Date now = QfzsDateUtils.now();
         Date expireAt = null;
 
         if (timeout > 0 && timeUnit != null) {
-            expireAt = MyFontDateUtils.add(now, timeout, timeUnit);
+            expireAt = QfzsDateUtils.add(now, timeout, timeUnit);
         }
 
         CacheWrapper<V> cacheWrapper = new CacheWrapper<>();

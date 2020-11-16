@@ -81,17 +81,6 @@ public interface UserService extends CrudService<User, Integer> {
     User getByEmailOfNonNull(@NonNull String email);
 
     /**
-     * 更新用户密码
-     *
-     * @param oldPassword 旧密码，不能为空
-     * @param newPassword 新密码，不能为空
-     * @param userId      用户 ID，不能为 null
-     * @return 更新后的用户信息
-     */
-    @NonNull
-    User updatePassword(@NonNull String oldPassword, @NonNull String newPassword, @NonNull Integer userId);
-
-    /**
      * 新建一个用户（持久化）
      *
      * @param userParam 用户信息表单，不能为 null
@@ -107,22 +96,6 @@ public interface UserService extends CrudService<User, Integer> {
      * @throws ForbiddenException 用户已过期时抛出
      */
     void mustNotExpire(@NonNull User user);
-
-    /**
-     * 校验密码与用户密码是否匹配
-     *
-     * @param user          用户实例，必不能为 null
-     * @param plainPassword 明文密码
-     */
-    boolean passwordMatch(@NonNull User user, @Nullable String plainPassword);
-
-    /**
-     * 设置用户密码
-     *
-     * @param user          用户实例，必不能为 null
-     * @param plainPassword 明文密码，不能为空
-     */
-    void setPassword(@NonNull User user, @NonNull String plainPassword);
 
     /**
      * 校验用户名和邮箱地址

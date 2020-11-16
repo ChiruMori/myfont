@@ -34,9 +34,5 @@ public class UserParam implements InputConverter<User> {
     @Size(max = 127, message = "电子邮件的字符长度不能超过 {max}", groups = {CreateCheck.class, UpdateCheck.class})
     private String email;
 
-    @Null(groups = UpdateCheck.class)
-    @Size(min = 8, max = 100, message = "密码的字符长度必须在 {min} - {max} 之间", groups = {CreateCheck.class})
-    private String password;
-
 }
 

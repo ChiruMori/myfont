@@ -19,15 +19,14 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import work.cxlm.model.enums.support.StringToEnumConverterFactory;
-import work.cxlm.model.support.MyFontConst;
+import work.cxlm.model.support.QfzsConst;
 import work.cxlm.security.resolver.AuthenticationArgumentResolver;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.utils.QfzsUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,14 +49,14 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
 
     private final SortHandlerMethodArgumentResolver sortResolver;
 
-    private final MyFontProperties myFontProperties;
+    private final QfzsProperties qfzsProperties;
 
     public WebMvcAutoConfiguration(PageableHandlerMethodArgumentResolver pageableResolver,
                                    SortHandlerMethodArgumentResolver sortResolver,
-                                   MyFontProperties myFontProperties) {
+                                   QfzsProperties qfzsProperties) {
         this.pageableResolver = pageableResolver;
         this.sortResolver = sortResolver;
-        this.myFontProperties = myFontProperties;
+        this.qfzsProperties = qfzsProperties;
     }
 
     @Override
@@ -90,14 +89,14 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String workDir = FILE_PROTOCOL + MyFontUtils.ensureSuffix(myFontProperties.getWorkDir(), MyFontConst.FILE_SEPARATOR);
+        String workDir = FILE_PROTOCOL + QfzsUtils.ensureSuffix(qfzsProperties.getWorkDir(), QfzsConst.FILE_SEPARATOR);
 
         // register /** resource handler.
         registry.addResourceHandler("/font/**")
                 .addResourceLocations("classpath:/admin/")
                 .addResourceLocations(workDir + "/static/");
 
-        String uploadUrlPattern = MyFontUtils.ensureBoth(myFontProperties.getUploadUrlPrefix(), MyFontConst.URL_SEPARATOR) + "**";
+        String uploadUrlPattern = QfzsUtils.ensureBoth(qfzsProperties.getUploadUrlPrefix(), QfzsConst.URL_SEPARATOR) + "**";
         // String adminPathPattern = MyFontUtils.ensureSuffix(myFontProperties.getAdminPath(), MyFontConst.URL_SEPARATOR) + "**";
 
         registry.addResourceHandler(uploadUrlPattern)
@@ -106,7 +105,7 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
         // registry.addResourceHandler(adminPathPattern)
         //        .addResourceLocations("classpath:/admin/");
 
-        if (!myFontProperties.isDocDisabled()) {
+        if (!qfzsProperties.isDocDisabled()) {
             // 启用文档接口
             registry.addResourceHandler("/swagger-ui.html")
                     .addResourceLocations("classpath:/META-INF/resources/");
@@ -127,9 +126,9 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
      * @return FreeMarkerConfigurer 实例
      */
     @Bean
-    public FreeMarkerConfigurer freemarkerConfig(MyFontProperties myFontProperties) throws IOException, TemplateException {
+    public FreeMarkerConfigurer freemarkerConfig(QfzsProperties qfzsProperties) throws IOException, TemplateException {
         FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
-        configurer.setTemplateLoaderPaths(FILE_PROTOCOL + myFontProperties.getWorkDir() + "templates/", "classpath:/templates/");
+        configurer.setTemplateLoaderPaths(FILE_PROTOCOL + qfzsProperties.getWorkDir() + "templates/", "classpath:/templates/");
         configurer.setDefaultEncoding("UTF-8");
 
         Properties properties = new Properties();
@@ -140,7 +139,7 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
         // 预定义配置
         freemarker.template.Configuration configuration = configurer.createConfiguration();
         configuration.setNewBuiltinClassResolver(TemplateClassResolver.SAFER_RESOLVER);
-        if (myFontProperties.isProductionEnv()) {
+        if (qfzsProperties.isProductionEnv()) {
             configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         }
 
@@ -160,14 +159,14 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
         resolver.setExposeRequestAttributes(false);
         resolver.setExposeSessionAttributes(false);
         resolver.setExposeSpringMacroHelpers(true);
-        resolver.setSuffix(MyFontConst.SUFFIX_FTL);
+        resolver.setSuffix(QfzsConst.SUFFIX_FTL);
         resolver.setContentType("text/html; charset=UTF-8");
         registry.viewResolver(resolver);
     }
 
     @Bean
     public RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
-        return new MyFontRequestMappingHandlerMapping(myFontProperties);
+        return new QfzsRequestMappingHandlerMapping(qfzsProperties);
     }
 
 }

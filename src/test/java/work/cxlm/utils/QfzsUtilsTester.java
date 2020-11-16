@@ -17,76 +17,76 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author cxlm
  */
 @Slf4j
-public class MyFontUtilsTester {
+public class QfzsUtilsTester {
 
     @Test
     void desensitizeSuccessTest() {
         String plainText = "12345678";
 
-        String desensitization = MyFontUtils.desensitize(plainText, 1, 1);
+        String desensitization = QfzsUtils.desensitize(plainText, 1, 1);
         assertEquals("1******8", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, 2, 3);
+        desensitization = QfzsUtils.desensitize(plainText, 2, 3);
         assertEquals("12***678", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, 2, 6);
+        desensitization = QfzsUtils.desensitize(plainText, 2, 6);
         assertEquals("12345678", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, 2, 7);
+        desensitization = QfzsUtils.desensitize(plainText, 2, 7);
         assertEquals("12345678", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, 0, 0);
+        desensitization = QfzsUtils.desensitize(plainText, 0, 0);
         assertEquals("********", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, -1, -1);
+        desensitization = QfzsUtils.desensitize(plainText, -1, -1);
         assertEquals("********", desensitization);
 
-        desensitization = MyFontUtils.desensitize(plainText, -1, 1);
+        desensitization = QfzsUtils.desensitize(plainText, -1, 1);
         assertEquals("*******8", desensitization);
     }
 
     @Test
     void desensitizeFailureTest() {
         String plainText = " ";
-        assertThrows(IllegalArgumentException.class, () -> MyFontUtils.desensitize(plainText, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> QfzsUtils.desensitize(plainText, 1, 1));
     }
 
     @Test
     void timeFormatTest() {
         long seconds = 0;
-        String timeFormat = MyFontUtils.timeFormat(seconds);
+        String timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("0 秒", timeFormat);
 
         seconds = -1;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("0 秒", timeFormat);
 
         seconds = 30;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("30 秒", timeFormat);
 
         seconds = 60;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("1 分", timeFormat);
 
         seconds = 120;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("2 分", timeFormat);
 
         seconds = 3600;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("1 时", timeFormat);
 
         seconds = 7200;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("2 时", timeFormat);
 
         seconds = 7200 + 30;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("2 时, 30 秒", timeFormat);
 
         seconds = 7200 + 60 + 30;
-        timeFormat = MyFontUtils.timeFormat(seconds);
+        timeFormat = QfzsUtils.timeFormat(seconds);
         assertEquals("2 时, 1 分, 30 秒", timeFormat);
     }
 
@@ -96,27 +96,27 @@ public class MyFontUtilsTester {
         String label = "chance";
         String pluralLabel = "chances";
 
-        String pluralizedFormat = MyFontUtils.pluralize(1, label, pluralLabel);
+        String pluralizedFormat = QfzsUtils.pluralize(1, label, pluralLabel);
         assertEquals("1 chance", pluralizedFormat);
 
 
-        pluralizedFormat = MyFontUtils.pluralize(2, label, pluralLabel);
+        pluralizedFormat = QfzsUtils.pluralize(2, label, pluralLabel);
         assertEquals("2 chances", pluralizedFormat);
 
-        pluralizedFormat = MyFontUtils.pluralize(0, label, pluralLabel);
+        pluralizedFormat = QfzsUtils.pluralize(0, label, pluralLabel);
         assertEquals("no chances", pluralizedFormat);
 
         // Test random positive time
         IntStream.range(0, 10000).forEach(i -> {
             long time = RandomUtils.nextLong(2, Long.MAX_VALUE);
-            String result = MyFontUtils.pluralize(time, label, pluralLabel);
+            String result = QfzsUtils.pluralize(time, label, pluralLabel);
             assertEquals(time + " " + pluralLabel, result);
         });
 
         // Test random negative time
         IntStream.range(0, 10000).forEach(i -> {
             long time = (-1) * RandomUtils.nextLong();
-            String result = MyFontUtils.pluralize(time, label, pluralLabel);
+            String result = QfzsUtils.pluralize(time, label, pluralLabel);
             assertEquals("no " + pluralLabel, result);
         });
     }
@@ -124,19 +124,19 @@ public class MyFontUtilsTester {
     @Test
     @SuppressWarnings("all")
     void pluralizeLabelExceptionTest() {
-        assertThrows(IllegalArgumentException.class, () -> MyFontUtils.pluralize(1, null, null));
+        assertThrows(IllegalArgumentException.class, () -> QfzsUtils.pluralize(1, null, null));
     }
 
     @Test
     void textEnsurePrefixAndSuffix() {
-        assertEquals("abcd", MyFontUtils.ensurePrefix("abcd", "ab"));
-        assertEquals("abcd", MyFontUtils.ensurePrefix("abcd", "abcd"));
-        assertEquals("abcd", MyFontUtils.ensurePrefix("cd", "ab"));
-        assertEquals("accd", MyFontUtils.ensurePrefix("cd", "ac"));
+        assertEquals("abcd", QfzsUtils.ensurePrefix("abcd", "ab"));
+        assertEquals("abcd", QfzsUtils.ensurePrefix("abcd", "abcd"));
+        assertEquals("abcd", QfzsUtils.ensurePrefix("cd", "ab"));
+        assertEquals("accd", QfzsUtils.ensurePrefix("cd", "ac"));
 
-        assertEquals("accd", MyFontUtils.ensureSuffix("ac", "cd"));
-        assertEquals("accd", MyFontUtils.ensureSuffix("accd", "cd"));
-        assertEquals("accd", MyFontUtils.ensureSuffix("accd", "accd"));
+        assertEquals("accd", QfzsUtils.ensureSuffix("ac", "cd"));
+        assertEquals("accd", QfzsUtils.ensureSuffix("accd", "cd"));
+        assertEquals("accd", QfzsUtils.ensureSuffix("accd", "accd"));
     }
 
 }

@@ -3,14 +3,14 @@ package work.cxlm.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import work.cxlm.model.enums.Mode;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.utils.QfzsUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-import static work.cxlm.model.support.MyFontConst.FILE_SEPARATOR;
-import static work.cxlm.model.support.MyFontConst.USER_HOME;
+import static work.cxlm.model.support.QfzsConst.FILE_SEPARATOR;
+import static work.cxlm.model.support.QfzsConst.USER_HOME;
 
 /**
  * 系统配置
@@ -21,14 +21,14 @@ import static work.cxlm.model.support.MyFontConst.USER_HOME;
  */
 @Data
 @ConfigurationProperties("my-font")
-public class MyFontProperties {
+public class QfzsProperties {
 
     /**
      * 上传路径前缀
      */
     private String uploadUrlPrefix = "upload";
 
-    private String workDir = MyFontUtils.ensureSuffix(USER_HOME, FILE_SEPARATOR) + ".my_font" + FILE_SEPARATOR;
+    private String workDir = QfzsUtils.ensureSuffix(USER_HOME, FILE_SEPARATOR) + ".my_font" + FILE_SEPARATOR;
 
     /**
      * 缓存保存的位置

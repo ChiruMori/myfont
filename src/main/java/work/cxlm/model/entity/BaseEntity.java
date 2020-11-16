@@ -3,8 +3,7 @@ package work.cxlm.model.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import work.cxlm.utils.MyFontDateUtils;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.utils.QfzsDateUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -32,7 +31,7 @@ public abstract class BaseEntity {
     // 保存之前执行
     @PrePersist
     protected void prePersist() {
-        Date now = MyFontDateUtils.now();
+        Date now = QfzsDateUtils.now();
         if (createTime == null) {
             createTime = now;
         }
@@ -46,6 +45,6 @@ public abstract class BaseEntity {
     @PreUpdate
     @PreRemove
     protected void preUpdate() {
-        updateTime = MyFontDateUtils.now();
+        updateTime = QfzsDateUtils.now();
     }
 }

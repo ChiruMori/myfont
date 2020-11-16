@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
-import work.cxlm.config.MyFontProperties;
+import work.cxlm.config.QfzsProperties;
 import work.cxlm.utils.JsonUtils;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Redis 实现的字符串缓存
+ * FIXME: 并不能用
  * created 2020/11/3 23:33
  *
  * @author chaos
@@ -35,8 +36,8 @@ public class RedisCacheStore extends AbstractStringCacheStore {
 
     // ******** 生命周期 *********
 
-    public RedisCacheStore(MyFontProperties myFontProperties) {
-        super.myFontProperties = myFontProperties;
+    public RedisCacheStore(QfzsProperties qfzsProperties) {
+        super.qfzsProperties = qfzsProperties;
         initRedis();
     }
 
@@ -47,7 +48,7 @@ public class RedisCacheStore extends AbstractStringCacheStore {
         }
         // 解析 Redis 集群节点
         Set<HostAndPort> nodes = new HashSet<>();
-        for (String hostPort : myFontProperties.getRedisNodes()) {
+        for (String hostPort : qfzsProperties.getRedisNodes()) {
             String[] hostPortArr = hostPort.split(":");
             if (hostPortArr.length >= 1) {
                 String host = hostPortArr[0];
@@ -73,7 +74,7 @@ public class RedisCacheStore extends AbstractStringCacheStore {
         // FIXME: 在完成配置后，Jedis 源码一通操作后，成功将 HOST 的值转换成了 localhost，导致无法连接
         // 疑似配置问题，因为代码本身来自 Halo 源码，Jedis 出现 bug 的可能性也不高，日后可以将 Redis 搭起来试一下
         REDIS = new JedisCluster(nodes, 5000, 2000, 3,
-                myFontProperties.getRedisPwd(), config);
+                qfzsProperties.getRedisPwd(), config);
         log.info("初始化 Redis 集群，[{}]", REDIS.getClusterNodes());
     }
 

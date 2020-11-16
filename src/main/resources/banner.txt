@@ -1,10 +1,9 @@
 ${AnsiColor.BLUE}
-
     ` |   `  |    ` ____/
     . |   .  |     /
    /  |  /   |    ____/
 __/  ___/  __| __/
 ${AnsiColor.BLACK}
-归去来兮！请息交以绝游。世与我而相违，复驾言兮焉求？
+你可拜瞅了，瞅也跑不起来！
 ${AnsiColor.BRIGHT_YELLOW}
-Version: ${application.version}
+Version: 3.0-SNAPSHOT
