@@ -6,9 +6,9 @@ import org.iq80.leveldb.*;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import work.cxlm.config.MyFontProperties;
+import work.cxlm.config.QfzsProperties;
 import work.cxlm.utils.JsonUtils;
-import work.cxlm.utils.MyFontDateUtils;
+import work.cxlm.utils.QfzsDateUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -38,8 +38,8 @@ public class LevelCacheStore extends AbstractStringCacheStore {
 
     //// -------------------- 生命周期 --------------------
 
-    public LevelCacheStore(MyFontProperties properties) {
-        super.myFontProperties = properties;
+    public LevelCacheStore(QfzsProperties properties) {
+        super.qfzsProperties = properties;
         init();
     }
 
@@ -50,7 +50,7 @@ public class LevelCacheStore extends AbstractStringCacheStore {
         }
         try{
             // 工作路径
-            File folder = new File(myFontProperties.getWorkDir() + ".leveldb");
+            File folder = new File(qfzsProperties.getWorkDir() + ".leveldb");
             DBFactory factory = new Iq80DBFactory();
             Options options = new Options();
             options.createIfMissing(true);
@@ -144,7 +144,7 @@ public class LevelCacheStore extends AbstractStringCacheStore {
             WriteBatch deleteBatch = LEVEL_DB.createWriteBatch();
 
             DBIterator iterator = LEVEL_DB.iterator();
-            Date now = MyFontDateUtils.now();
+            Date now = QfzsDateUtils.now();
             while (iterator.hasNext()) {
                 Map.Entry<byte[], byte[]> next = iterator.next();  // Level DB 的键值均为字节数组
                 if (next.getKey() == null || next.getValue() == null) {

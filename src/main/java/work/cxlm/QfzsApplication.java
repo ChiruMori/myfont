@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * created 2020/10/16 23:08
  */
 @SpringBootApplication
-public class MyFontApplication {
+public class QfzsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MyFontApplication.class, args);
+        SpringApplication.run(QfzsApplication.class, args);
     }
 }

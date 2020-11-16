@@ -1,6 +1,7 @@
 package work.cxlm.model.properties;
 
 /**
+ * TODO: 放置系统配置项，确定无需系统配置项时，可以删除本类。如需要可能需要重新引入系统安装模块
  * created 2020/11/14 23:07
  *
  * @author Chiru

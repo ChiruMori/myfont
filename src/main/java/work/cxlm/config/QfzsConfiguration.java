@@ -21,15 +21,15 @@ import work.cxlm.cache.RedisCacheStore;
  * @author cxlm
  */
 @Configuration
-@EnableConfigurationProperties(MyFontProperties.class)
+@EnableConfigurationProperties(QfzsProperties.class)
 @Slf4j
-public class MyFontConfiguration {
+public class QfzsConfiguration {
 
-    private MyFontProperties myFontProperties;
+    private QfzsProperties qfzsProperties;
 
     @Autowired
-    public void setMyFontProperties(MyFontProperties myFontProperties) {
-        this.myFontProperties = myFontProperties;
+    public void setMyFontProperties(QfzsProperties qfzsProperties) {
+        this.qfzsProperties = qfzsProperties;
     }
 
     @Bean
@@ -42,12 +42,12 @@ public class MyFontConfiguration {
     @ConditionalOnMissingBean  // 防止重复注册，出现重复的情况直接抛出异常
     public AbstractStringCacheStore stringCacheStore() {
         AbstractStringCacheStore stringCacheStore;
-        switch (myFontProperties.getCache()) {
+        switch (qfzsProperties.getCache()) {
             case "level":
-                stringCacheStore = new LevelCacheStore(myFontProperties);
+                stringCacheStore = new LevelCacheStore(qfzsProperties);
                 break;
             case "redis":
-                stringCacheStore = new RedisCacheStore(myFontProperties);
+                stringCacheStore = new RedisCacheStore(qfzsProperties);
                 break;
             case "memory":
             default:

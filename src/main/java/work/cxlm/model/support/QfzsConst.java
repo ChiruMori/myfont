@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author ryanwang
  * @author cxlm
  */
-public class MyFontConst {
+public class QfzsConst {
 
     /**
      * 用户路径

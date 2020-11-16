@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
  * @author johnniang
  * @author cxlm
  */
-public class MyFontDateUtils {
+public class QfzsDateUtils {
 
-    private MyFontDateUtils() {
+    private QfzsDateUtils() {
     }
 
     /**

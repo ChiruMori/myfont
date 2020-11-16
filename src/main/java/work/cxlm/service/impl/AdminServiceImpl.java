@@ -1,33 +1,26 @@
 package work.cxlm.service.impl;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 import work.cxlm.cache.AbstractStringCacheStore;
-import work.cxlm.config.MyFontProperties;
 import work.cxlm.event.logger.LogEvent;
 import work.cxlm.exception.BadRequestException;
-import work.cxlm.exception.MissingPropertyException;
 import work.cxlm.exception.NotFoundException;
-import work.cxlm.exception.ServiceException;
 import work.cxlm.mail.MailService;
-import work.cxlm.model.dto.StatisticDTO;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.enums.LogType;
 import work.cxlm.model.params.LoginParam;
-import work.cxlm.model.params.ResetPasswordParam;
 import work.cxlm.security.authentication.Authentication;
 import work.cxlm.security.context.SecurityContextHandler;
 import work.cxlm.security.token.AuthToken;
 import work.cxlm.security.util.SecurityUtils;
 import work.cxlm.service.AdminService;
 import work.cxlm.service.UserService;
-import work.cxlm.utils.MyFontUtils;
+import work.cxlm.utils.QfzsUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +50,7 @@ public class AdminServiceImpl implements AdminService {
         this.mailService = mailService;
     }
 
+    // FIXME: 登录不采用密码方式进行，需要修改验证相关逻辑
     @Override
     public User authenticate(LoginParam loginParam) {
         Assert.notNull(loginParam, "输入参数不能为 null");
@@ -81,12 +75,12 @@ public class AdminServiceImpl implements AdminService {
 
         userService.mustNotExpire(user);
 
-        if (!userService.passwordMatch(user, loginParam.getPassword())) {
-            // 密码不匹配
-            eventPublisher.publishEvent(new LogEvent(this, loginParam.getUsername(), LogType.LOGGED_FAILED, loginParam.getUsername()));
-
-            throw new BadRequestException(mismatchTip);
-        }
+//        if (!userService.passwordMatch(user, loginParam.getPassword())) {
+//            // 密码不匹配
+//            eventPublisher.publishEvent(new LogEvent(this, loginParam.getUsername(), LogType.LOGGED_FAILED, loginParam.getUsername()));
+//
+//            throw new BadRequestException(mismatchTip);
+//        }
 
         return user;
     }
@@ -119,60 +113,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void sendResetPasswordCode(ResetPasswordParam param) {
-        cacheStore.getAny("code", String.class).ifPresent(code -> {
-            throw new ServiceException("已经获取过验证码，请查收或者稍后再试");
-        });
-
-        // 生成四位随机数
-        String code = RandomUtil.randomNumbers(8);
-        log.info("获取了重设密码验证码：[{}]", code);
-
-        // 设置验证码有效时长
-        cacheStore.putAny("code", code, 5, TimeUnit.MINUTES);
-
-        String content = "您正在进行重置密码操作，如果不是本人操作，请尽快应对。重置验证码为【" + code + "】，五分钟有效";
-        mailService.sendTextMail(param.getEmail(), "MyFont：找回密码", content);
-    }
-
-    @Override
-    public void resetPasswordByCode(ResetPasswordParam param) {
-        if (StringUtils.isEmpty(param.getCode())) {
-            throw new MissingPropertyException("验证码不能为空");
-        }
-
-        if (StringUtils.isEmpty(param.getPassword())) {
-            throw new MissingPropertyException("密码不能为空");
-        }
-
-        if (!userService.verifyUser(param.getUsername(), param.getEmail())) {
-            throw new BadRequestException("用户名、邮箱验证失败");
-        }
-
-        String code = cacheStore.getAny("code", String.class).orElseThrow(() -> new BadRequestException("请首先获取验证码"));
-        if (!code.equals(param.getCode())) {
-            throw new BadRequestException("验证码错误");
-        }
-
-        // 更新用户名密码，删除缓存的验证码
-        User nowUser = userService.getCurrentUser().orElseThrow(() -> new BadRequestException("请先初始化系统"));
-        userService.setPassword(nowUser, param.getPassword());
-        userService.update(nowUser);
-        cacheStore.delete("code");
-    }
-
-    @Override
-    public StatisticDTO getCount() {
-        StatisticDTO res = new StatisticDTO();
-        // TODO: 统计字体相关数据（调用 FontService 相关过程统计数量）
-        res.setAttachCount(0);
-        res.setCreatedFontCount(0);
-        res.setFontCount(0);
-        res.setKanjiCount(0);
-        return res;
-    }
-
-    @Override
     @NonNull
     public AuthToken refreshToken(String refreshToken) {
         Assert.hasText(refreshToken, "RefreshToken 不能为空");
@@ -194,9 +134,9 @@ public class AdminServiceImpl implements AdminService {
         Assert.notNull(user, "用户不能为 Null");
         AuthToken authToken = new AuthToken();
 
-        authToken.setAccessToken(MyFontUtils.randomUUIDWithoutDash());
+        authToken.setAccessToken(QfzsUtils.randomUUIDWithoutDash());
         authToken.setExpiredIn(ACCESS_TOKEN_EXPIRED_SECONDS);
-        authToken.setRefreshToken(MyFontUtils.randomUUIDWithoutDash());
+        authToken.setRefreshToken(QfzsUtils.randomUUIDWithoutDash());
 
         cacheStore.putAny(SecurityUtils.buildAccessTokenKey(authToken.getAccessToken()), user.getId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
         cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(authToken.getRefreshToken()), user.getId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);

@@ -7,40 +7,22 @@ package work.cxlm.model.enums;
  */
 public enum LogType implements ValueEnum<Integer> {
 
-    /**
-     * 系统完成初始化（安装）
-     */
-    SYSTEM_INSTALLED(99),
 
     /**
-     * 发布了新的字
-     */
-    KANJI_PUBLISHED(0),
-
-    /**
-     * 删除了某个字
-     */
-    KANJI_DELETED(1),
-
-    /**
-     * 用户登录
+     * 管理后台用户登录
      */
     LOGGED_IN(10),
 
     /**
-     * 登录失败
+     * 管理后台登录失败
      */
     LOGGED_FAILED(11),
 
     /**
-     * 登出
+     * 管理后台登出
      */
-    LOGGED_OUT(12),
+    LOGGED_OUT(12)
 
-    /**
-     * 修改用户密码
-     */
-    PWD_UPDATED(20),
     ;
 
     private final Integer value;

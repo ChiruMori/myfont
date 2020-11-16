@@ -8,7 +8,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * 用户实体类，本程序中，只应存在一个合法用户，但需要兼容多个用户的情况
+ * 用户实体类
+ * FIXME: 修改需求相关的用户字段
  * created 2020/10/21 15:03
  *
  * @author cxlm
@@ -30,9 +31,6 @@ public class User extends BaseEntity {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
-
-    @Column(name = "password", nullable = false)
-    private String password;
 
     @Column(name = "email", length = 127)
     private String email;
