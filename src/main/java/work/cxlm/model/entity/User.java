@@ -3,6 +3,13 @@ package work.cxlm.model.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.util.StringUtils;
+import work.cxlm.model.enums.UserGender;
+import work.cxlm.model.support.QfzsConst;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,26 +29,71 @@ import java.util.Date;
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "custom-id")
+    @GenericGenerator(name = "custom-id", strategy = "work.cxlm.model.entity.support.CustomIdGenerator")
     private Integer id;
 
-    @Column(name = "username", length = 50, nullable = false)
-    private String username;
-
-    @Column(name = "nickname", nullable = false)
-    private String nickname;
-
-    @Column(name = "email", length = 127)
-    private String email;
+    /**
+     * 微信 ID
+     */
+    @Column(name = "username", length = 30)
+    private String wxId;
 
     /**
-     * 当前用户被停用的到期时间
+     * 学工号
      */
-    @Column(name="expire_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date expireTime;
+    @Column(name = "student_no", length = 15)
+    private String studentNo;
 
+    /**
+     * 学院名
+     */
+    @Column(name = "institute", length = 50)
+    private String institute;
+
+    /**
+     * 专业名
+     */
+    @Column(name = "major", length = 50)
+    private String major;
+
+    /**
+     * 入学年份
+     */
+    @Column(name = "enroll_year")
+    @Range(min = 1920, max = 2120)
+    private int enrollYear;
+
+    /**
+     * 真实姓名
+     */
+    @Column(name = "real_name")
+    private String realName;
+
+    /**
+     * 用户性别
+     */
+    @Column(name = "gender")
+    @ColumnDefault("0")
+    private UserGender gender;
+
+    /**
+     * 用户头像
+     */
+    @Column(name = "head")
+    private String head;
+
+    /**
+     * 个性签名
+     */
+    @Column(name = "sign")
+    private String sign;
+
+    /**
+     * 用户邮箱
+     */
+    @Column(name = "email", length = 60)
+    private String email;
 
     @Override
     public void prePersist() {
@@ -49,6 +101,10 @@ public class User extends BaseEntity {
 
         if (email == null) {
             email = "";
+        }
+
+        if (StringUtils.isEmpty(sign)) {
+            sign = QfzsConst.DEFAULT_USER_SIGNATURE;
         }
     }
 

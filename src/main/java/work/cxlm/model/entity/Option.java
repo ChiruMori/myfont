@@ -17,7 +17,7 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "options")
+@Table(name = "system_options")
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor

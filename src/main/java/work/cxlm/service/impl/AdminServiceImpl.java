@@ -65,7 +65,7 @@ public class AdminServiceImpl implements AdminService {
             // 通过用户名或邮箱获取用户
             user = Validator.isEmail(username) ?
                     userService.getByEmailOfNonNull(username) :
-                    userService.getByUsernameOfNonNull(username);
+                    userService.getByRealNameOfNonNull(username);
         } catch (NotFoundException e) {
             log.error("用户名不存在： " + username);
             eventPublisher.publishEvent(new LogEvent(this, loginParam.getUsername(), LogType.LOGGED_FAILED, loginParam.getUsername()));
@@ -73,7 +73,7 @@ public class AdminServiceImpl implements AdminService {
             throw new BadRequestException(mismatchTip);
         }
 
-        userService.mustNotExpire(user);
+        mustNotExpire(user);
 
 //        if (!userService.passwordMatch(user, loginParam.getPassword())) {
 //            // 密码不匹配
@@ -107,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
         });
 
         // 注销事件
-        eventPublisher.publishEvent(new LogEvent(this, user.getUsername(), LogType.LOGGED_OUT, "用户登出：" + user.getNickname()));
+        eventPublisher.publishEvent(new LogEvent(this, user.getRealName(), LogType.LOGGED_OUT, "用户登出：" + user.getRealName()));
 
         log.info("用户登出");
     }
@@ -141,5 +141,18 @@ public class AdminServiceImpl implements AdminService {
         cacheStore.putAny(SecurityUtils.buildAccessTokenKey(authToken.getAccessToken()), user.getId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
         cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(authToken.getRefreshToken()), user.getId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
         return authToken;
+    }
+
+    @Override
+    public void mustNotExpire(User user) {
+        Assert.notNull(user, "User 不能为 null");
+
+        // TODO：验证此代码段是否可复用，若不可则移除
+//        Date now = QfzsDateUtils.now();
+//        if (user.getExpireTime() != null && user.getExpireTime().after(now)) {
+//            // 未到达停用时间
+//            long seconds = TimeUnit.MILLISECONDS.toSeconds(user.getExpireTime().getTime() - now.getTime());
+//            throw new ForbiddenException("账号已被停用，请" + QfzsUtils.timeFormat(seconds) + "后重试").setErrorData(seconds);
+//        }
     }
 }

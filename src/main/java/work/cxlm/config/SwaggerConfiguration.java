@@ -61,14 +61,14 @@ public class SwaggerConfiguration {
 
     // 非管理员功能 API 文档
     @Bean
-    public Docket myFontDefaultDocket() {
+    public Docket qfzsDefaultDocket() {
         if (qfzsProperties.isDocDisabled()) {
             log.debug("文档未开启");
         }
 
-        return buildApiDocket("常规功能 API 文档",
-                "work.cxlm.controller.content",
-                "/font/api/content/**")
+        return buildApiDocket("用户功能模块 API",
+                "work.cxlm.controller.users",
+                "/key3/users/**")
                 .securitySchemes(contentApiKeys())
                 .securityContexts(contentSecurityContext())
                 .enable(!qfzsProperties.isDocDisabled());
@@ -76,14 +76,29 @@ public class SwaggerConfiguration {
 
     // 管理员功能 API 文档
     @Bean
-    public Docket myFontAdminApi() {
+    public Docket qfzsAdminApi() {
         if (qfzsProperties.isDocDisabled()) {
             log.debug("文档未开启");
         }
 
         return buildApiDocket("管理员功能 API 文档",
                 "work.cxlm.controller.admin",
-                "/font/api/admin/**")
+                "/key3/admin/**")
+                .securitySchemes(adminApiKeys())
+                .securityContexts(adminSecurityContext())
+                .enable(!qfzsProperties.isDocDisabled());
+    }
+
+    // 管理员功能 API 文档
+    @Bean
+    public Docket qfzsTimeApi() {
+        if (qfzsProperties.isDocDisabled()) {
+            log.debug("文档未开启");
+        }
+
+        return buildApiDocket("时段相关 API 文档",
+                "work.cxlm.controller.time",
+                "/key3/time/**")
                 .securitySchemes(adminApiKeys())
                 .securityContexts(adminSecurityContext())
                 .enable(!qfzsProperties.isDocDisabled());

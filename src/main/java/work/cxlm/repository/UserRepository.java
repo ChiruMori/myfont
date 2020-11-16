@@ -13,11 +13,11 @@ import java.util.Optional;
  */
 public interface UserRepository extends BaseRepository<User, Integer> {
     /**
-     * @param username 用户名，不可为 null
+     * @param realName 用户名，不可为 null
      * @return Optional 包装的 User 实例
      */
     @NonNull
-    Optional<User> findByUsername(@NonNull String username);
+    Optional<User> findByRealName(@NonNull String realName);
 
     /**
      * @param email 邮箱地址，不可为 null

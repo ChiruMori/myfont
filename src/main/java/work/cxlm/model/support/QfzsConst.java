@@ -50,5 +50,9 @@ public class QfzsConst {
      * Content api token param name
      */
     public final static String API_ACCESS_KEY_QUERY_NAME = "api_access_key";
+    /**
+     * 默认个性签名
+     */
+    public final static String DEFAULT_USER_SIGNATURE = "这家伙很懒，什么都没写。。。";
 
 }

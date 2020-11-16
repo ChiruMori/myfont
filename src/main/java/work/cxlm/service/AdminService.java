@@ -2,6 +2,7 @@ package work.cxlm.service;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import work.cxlm.exception.ForbiddenException;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.params.LoginParam;
 import work.cxlm.security.token.AuthToken;
@@ -44,4 +45,12 @@ public interface AdminService {
      */
     @NonNull
     AuthToken refreshToken(@NonNull String refreshToken);
+
+    /**
+     * 用户未过期
+     *
+     * @param user 用户实例，必不能为 null
+     * @throws ForbiddenException 用户已过期时抛出
+     */
+    void mustNotExpire(@NonNull User user);
 }

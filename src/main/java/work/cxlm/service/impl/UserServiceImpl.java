@@ -1,29 +1,20 @@
 package work.cxlm.service.impl;
 
-import cn.hutool.crypto.digest.BCrypt;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import work.cxlm.event.logger.LogEvent;
 import work.cxlm.event.UserUpdatedEvent;
 import work.cxlm.exception.BadRequestException;
-import work.cxlm.exception.ForbiddenException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.model.entity.User;
-import work.cxlm.model.enums.LogType;
 import work.cxlm.model.params.UserParam;
 import work.cxlm.repository.UserRepository;
 import work.cxlm.service.UserService;
 import work.cxlm.service.base.AbstractCrudService;
-import work.cxlm.utils.QfzsDateUtils;
-import work.cxlm.utils.QfzsUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * created 2020/10/22 16:00
@@ -58,13 +49,13 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> getByRealName(String realName) {
+        return userRepository.findByRealName(realName);
     }
 
     @Override
-    public User getByUsernameOfNonNull(String username) {
-        return getByUsername(username).orElseThrow(() -> new NotFoundException("用户名不存在").setErrorData(username));
+    public User getByRealNameOfNonNull(String realName) {
+        return getByRealName(realName).orElseThrow(() -> new NotFoundException("用户名不存在").setErrorData(realName));
     }
 
     @Override
@@ -85,21 +76,9 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public void mustNotExpire(User user) {
-        Assert.notNull(user, "User 不能为 null");
-
-        Date now = QfzsDateUtils.now();
-        if (user.getExpireTime() != null && user.getExpireTime().after(now)) {
-            // 未到达停用时间
-            long seconds = TimeUnit.MILLISECONDS.toSeconds(user.getExpireTime().getTime() - now.getTime());
-            throw new ForbiddenException("账号已被停用，请" + QfzsUtils.timeFormat(seconds) + "后重试").setErrorData(seconds);
-        }
-    }
-
-    @Override
-    public boolean verifyUser(String username, String email) {
+    public boolean verifyUser(String realName, String email) {
         User nowUser = getCurrentUser().orElseThrow(() -> new BadRequestException("无有效用户"));
-        return nowUser.getUsername().equals(username) && nowUser.getEmail().equals(email);
+        return nowUser.getRealName().equals(realName) && nowUser.getEmail().equals(email);
     }
 
     @Override

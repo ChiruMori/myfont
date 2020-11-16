@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Entity
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "logs", indexes = {@Index(name = "logs_create_time", columnList = "create_time")})
+@Table(name = "system_logs", indexes = {@Index(name = "logs_create_time", columnList = "create_time")})
 public class Log extends BaseEntity {
 
     @Id

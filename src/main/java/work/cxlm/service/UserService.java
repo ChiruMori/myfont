@@ -44,21 +44,21 @@ public interface UserService extends CrudService<User, Integer> {
     /**
      * 通过用户名获取用户
      *
-     * @param username 用户名，不可为 null
+     * @param realName 用户名，不可为 null
      * @return Optional 封装的 User
      */
     @NonNull
-    Optional<User> getByUsername(@NonNull String username);
+    Optional<User> getByRealName(@NonNull String realName);
 
     /**
      * 通过用户名获取用户
      *
-     * @param username 用户名，不可为 null
+     * @param realName 用户名，不可为 null
      * @return User 实例
      * @throws NotFoundException 用户不存在时抛出
      */
     @NonNull
-    User getByUsernameOfNonNull(@NonNull String username);
+    User getByRealNameOfNonNull(@NonNull String realName);
 
     /**
      * 通过邮箱地址获取用户
@@ -89,21 +89,14 @@ public interface UserService extends CrudService<User, Integer> {
     @NonNull
     User createBy(@NonNull UserParam userParam);
 
-    /**
-     * 用户未过期
-     *
-     * @param user 用户实例，必不能为 null
-     * @throws ForbiddenException 用户已过期时抛出
-     */
-    void mustNotExpire(@NonNull User user);
 
     /**
      * 校验用户名和邮箱地址
      *
-     * @param username 用户名，不能为 null
+     * @param realName 用户名，不能为 null
      * @param email    邮箱地址，不能为 null
      * @return boolean
      */
-    boolean verifyUser(@NonNull String username, @NonNull String email);
+    boolean verifyUser(@NonNull String realName, @NonNull String email);
 
 }

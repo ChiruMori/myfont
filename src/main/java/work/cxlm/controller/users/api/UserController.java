@@ -1,4 +1,4 @@
-package work.cxlm.controller.admin.api;
+package work.cxlm.controller.users.api;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

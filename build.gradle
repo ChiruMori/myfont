@@ -9,7 +9,7 @@ plugins {
 
 group "work.cxlm"
 version "3.0-SNAPSHOT"
-description "my font, a system to manage your font system"
+description "system for club management"
 
 repositories {
     mavenLocal()
