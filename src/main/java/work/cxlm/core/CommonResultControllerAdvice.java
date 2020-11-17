@@ -25,14 +25,15 @@ import work.cxlm.model.support.BaseResponse;
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
-    public boolean supports(MethodParameter returnType, @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(@NonNull MethodParameter returnType, @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
         return AbstractJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override
-    public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType contentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(@Nullable Object body, @NonNull MethodParameter returnType,
+                                  @NonNull MediaType contentType,
+                                  @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  @NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response) {
         MappingJacksonValue container = getOrCreateContainer(body);
         beforeBodyWriteInternal(container, response);
         return container;

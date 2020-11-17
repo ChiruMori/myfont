@@ -34,12 +34,12 @@ public class QfzsRequestMappingHandlerMapping extends RequestMappingHandlerMappi
     private void initBlackPatterns() {
         String uploadUrlPattern = QfzsUtils.ensureBoth(qfzsProperties.getUploadUrlPrefix(), QfzsConst.URL_SEPARATOR) + "**";
 
-        blackPatterns.add("/font/js/**");
-        blackPatterns.add("/font/images/**");
-        blackPatterns.add("/font/fonts/**");
-        blackPatterns.add("/font/css/**");
-        blackPatterns.add("/font/assets/**");
-        blackPatterns.add("/font/csrf");
+        blackPatterns.add("/key3/js/**");
+        blackPatterns.add("/key3/images/**");
+        blackPatterns.add("/key3/css/**");
+        blackPatterns.add("/key3/assets/**");
+        blackPatterns.add("/key3/csrf");
+        blackPatterns.add("/key3/users/api/**");
         blackPatterns.add("/swagger-ui.html");
         blackPatterns.add("/webjars/**");
         blackPatterns.add(uploadUrlPattern);

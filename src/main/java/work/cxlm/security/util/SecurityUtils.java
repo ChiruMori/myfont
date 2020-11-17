@@ -13,11 +13,11 @@ import work.cxlm.model.entity.User;
 public class SecurityUtils {
 
     // Access Token 前缀
-    private static final String TOKEN_ACCESS_CACHE_PREFIX = "myfont.admin.access.token.";
-    private static final String ACCESS_TOKEN_CACHE_PREFIX = "myfont.admin.access_token.";
+    private static final String TOKEN_ACCESS_CACHE_PREFIX = "qfzs.admin.access.token.";
+    private static final String ACCESS_TOKEN_CACHE_PREFIX = "qfzs.admin.access_token.";
 
-    public static final String TOKEN_REFRESH_CACHE_PREFIX = "myfont.admin.refresh.token.";
-    public static final String REFRESH_TOKEN_CACHE_PREFIX = "myfont.admin.refresh_token.";
+    public static final String TOKEN_REFRESH_CACHE_PREFIX = "qfzs.admin.refresh.token.";
+    public static final String REFRESH_TOKEN_CACHE_PREFIX = "qfzs.admin.refresh_token.";
 
     @NonNull
     public static String buildAccessTokenKey(@NonNull User user) {

@@ -9,7 +9,10 @@ import org.springframework.util.CollectionUtils;
 import work.cxlm.exception.BeanUtilsException;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +47,7 @@ public class BeanUtils {
         // 构建实例
         try {
             // 从目标类对象创建一个实例
-            T targetInstance = targetClass.newInstance();
+            T targetInstance = targetClass.getDeclaredConstructor().newInstance();
             // 拷贝属性
             org.springframework.beans.BeanUtils.copyProperties(source, targetInstance, getNullPropertyNames(source));
             // 返回构造的实例
@@ -70,6 +73,33 @@ public class BeanUtils {
             org.springframework.beans.BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
         } catch (BeansException e) {
             throw new BeanUtilsException("拷贝失败", e);
+        }
+    }
+
+    /**
+     * 将一个 Bean 的属性使用指定 function 进行处理
+     *
+     * @param src         要处理的源对象
+     * @param mapFunction 用于处理字符串属性的方法
+     */
+    public static void mapProperties(@NonNull Object src, @NonNull Function<String, String> mapFunction) {
+        Assert.notNull(src, "源对象不能为 null");
+        Assert.notNull(mapFunction, "映射函数不能为 null");
+
+        BeanWrapperImpl beanWrapper = new BeanWrapperImpl(src);
+        PropertyDescriptor[] propertyDescriptors = beanWrapper.getPropertyDescriptors();
+
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            // 对字符串属性进行转化
+            if (propertyDescriptor.getPropertyType().isAssignableFrom(String.class)) {
+                String propertyValue;
+                try {
+                    propertyValue = (String) propertyDescriptor.getReadMethod().invoke(src);
+                    propertyDescriptor.getWriteMethod().invoke(src, mapFunction.apply(propertyValue));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new BeanUtilsException("对属性值 [{}] 进行转化失败", e);
+                }
+            }
         }
     }
 

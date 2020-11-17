@@ -2,9 +2,9 @@ package work.cxlm.service;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import work.cxlm.exception.ForbiddenException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.model.entity.User;
+import work.cxlm.model.params.UserLoginParam;
 import work.cxlm.model.params.UserParam;
 import work.cxlm.service.base.CrudService;
 
@@ -33,70 +33,47 @@ public interface UserService extends CrudService<User, Integer> {
      */
     int LOCK_MINUTES = 10;
 
-    /**
-     * 获取当前用户
-     *
-     * @return Optional 封装的 User
-     */
-    @NonNull
-    Optional<User> getCurrentUser();
+//    /**
+//     * 通过用户名获取用户
+//     *
+//     * @param realName 用户名，不可为 null
+//     * @return Optional 封装的 User
+//     */
+//    @NonNull
+//    Optional<User> getByRealName(@NonNull String realName);
+//
+//    /**
+//     * 通过用户名获取用户
+//     *
+//     * @param realName 用户名，不可为 null
+//     * @return User 实例
+//     * @throws NotFoundException 用户不存在时抛出
+//     */
+//    @NonNull
+//    User getByRealNameOfNonNull(@NonNull String realName);
 
     /**
-     * 通过用户名获取用户
-     *
-     * @param realName 用户名，不可为 null
-     * @return Optional 封装的 User
+     * 通过用户登录凭证获取 openId
+     * @param code 登录凭证
+     * @return openId，可能为 null
      */
-    @NonNull
-    Optional<User> getByRealName(@NonNull String realName);
+    @Nullable
+    String getOpenIdByCode(@NonNull String code);
 
     /**
-     * 通过用户名获取用户
-     *
-     * @param realName 用户名，不可为 null
-     * @return User 实例
-     * @throws NotFoundException 用户不存在时抛出
+     * 用户使用 openId 登录，通过小程序登录
+     * @param openId 小程序中得到的 openId，用户唯一标识
+     * @return 登录后的用户，可能为 Null
      */
-    @NonNull
-    User getByRealNameOfNonNull(@NonNull String realName);
+    @Nullable
+    User login(@Nullable String openId);
 
     /**
-     * 通过邮箱地址获取用户
-     *
-     * @param email 邮箱地址，不可为 null
-     * @return User 实例
-     * @throws NotFoundException 用户不存在时抛出
+     * 通过表单更新用户信息
+     * @param user 已存在的用户，从缓存中获得，可能为 null
+     * @param param 填写的表单
+     * @return 更新后的用户，如果找不到对应的用户将返回 null
      */
-    @NonNull
-    Optional<User> getByEmail(@NonNull String email);
-
-    /**
-     * 通过邮箱地址获取用户
-     *
-     * @param email 邮箱地址，不可为 null
-     * @return User 实例
-     * @throws NotFoundException 用户不存在时抛出
-     */
-    @NonNull
-    User getByEmailOfNonNull(@NonNull String email);
-
-    /**
-     * 新建一个用户（持久化）
-     *
-     * @param userParam 用户信息表单，不能为 null
-     * @return 新建的 User 实例
-     */
-    @NonNull
-    User createBy(@NonNull UserParam userParam);
-
-
-    /**
-     * 校验用户名和邮箱地址
-     *
-     * @param realName 用户名，不能为 null
-     * @param email    邮箱地址，不能为 null
-     * @return boolean
-     */
-    boolean verifyUser(@NonNull String realName, @NonNull String email);
-
+    @Nullable
+    User updateUserByParam(@Nullable User user, @NonNull UserParam param);
 }

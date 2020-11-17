@@ -5,18 +5,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.StringUtils;
 import work.cxlm.model.enums.UserGender;
 import work.cxlm.model.support.QfzsConst;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * 用户实体类
- * FIXME: 修改需求相关的用户字段
  * created 2020/10/21 15:03
  *
  * @author cxlm
@@ -34,10 +31,16 @@ public class User extends BaseEntity {
     private Integer id;
 
     /**
-     * 微信 ID
+     * 微信 ID，openId
      */
     @Column(name = "username", length = 30)
     private String wxId;
+
+    /**
+     * 微信名
+     */
+    @Column(name = "wx_name", length = 100)
+    private String wxName;
 
     /**
      * 学工号
@@ -54,7 +57,7 @@ public class User extends BaseEntity {
     /**
      * 专业名
      */
-    @Column(name = "major", length = 50)
+    @Column(name = "major", length = 60)
     private String major;
 
     /**
@@ -67,7 +70,7 @@ public class User extends BaseEntity {
     /**
      * 真实姓名
      */
-    @Column(name = "real_name")
+    @Column(name = "real_name", length = 30)
     private String realName;
 
     /**

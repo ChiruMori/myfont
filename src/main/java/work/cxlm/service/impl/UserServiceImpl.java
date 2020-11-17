@@ -1,20 +1,33 @@
 package work.cxlm.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import work.cxlm.cache.AbstractStringCacheStore;
+import work.cxlm.cache.CacheStore;
+import work.cxlm.config.QfzsProperties;
 import work.cxlm.event.UserUpdatedEvent;
 import work.cxlm.exception.BadRequestException;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.model.entity.User;
+import work.cxlm.model.params.UserLoginParam;
 import work.cxlm.model.params.UserParam;
+import work.cxlm.model.rpc.RpcClient;
+import work.cxlm.model.rpc.code2session.Code2SessionParam;
+import work.cxlm.model.rpc.code2session.Code2SessionResponse;
 import work.cxlm.repository.UserRepository;
 import work.cxlm.service.UserService;
 import work.cxlm.service.base.AbstractCrudService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static work.cxlm.model.support.QfzsConst.USER_CACHE_PREFIX;
 
 /**
  * created 2020/10/22 16:00
@@ -24,71 +37,75 @@ import java.util.Optional;
  * @author cxlm
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
     private final UserRepository userRepository;
-
+    private final QfzsProperties qfzsProperties;
     private final ApplicationEventPublisher eventPublisher;
+    private final AbstractStringCacheStore cacheStore;
 
     public UserServiceImpl(UserRepository userRepository,
-                           ApplicationEventPublisher eventPublisher) {
+                           ApplicationEventPublisher eventPublisher,
+                           QfzsProperties qfzsProperties,
+                           AbstractStringCacheStore cacheStore) {
         super(userRepository);
         this.userRepository = userRepository;
         this.eventPublisher = eventPublisher;
+        this.qfzsProperties = qfzsProperties;
+        this.cacheStore = cacheStore;
+    }
+
+//    @Override
+//    public User create(User user) {
+//        if (count() != 0) {
+//            throw new BadRequestException("当前系统不允许多个用户同时存在");
+//        }
+//        User newUser = super.create(user);
+//        eventPublisher.publishEvent(new UserUpdatedEvent(this, newUser.getId()));
+//
+//        return newUser;
+//    }
+
+    @Override
+    public String getOpenIdByCode(@NonNull String code) {
+        Code2SessionParam param = new Code2SessionParam(qfzsProperties.getAppId(), qfzsProperties.getAppSecret(),
+                code, "authorization_code");
+        Code2SessionResponse response = RpcClient.getUrl(qfzsProperties.getAppRequestUrl(), Code2SessionResponse.class, param);
+        return response.getOpenid();
     }
 
     @Override
-    public Optional<User> getCurrentUser() {
-        List<User> users = listAll();
-        // 空的
-        if (CollectionUtils.isEmpty(users)) {
-            return Optional.empty();
+    public User login(@Nullable String openId) {
+        if (openId == null) {
+            log.debug("openId 为空，无法登录");
+            return null;
         }
-        // 返回第一个用户，系统仅存在一个合法用户
-        return Optional.of(users.get(0));
+        String nowUserCacheKey = USER_CACHE_PREFIX + openId;
+        return cacheStore.getAny(nowUserCacheKey, User.class).orElseGet(() -> {
+            Optional<User> userInStorage = userRepository.findByWxId(openId);
+            if (userInStorage.isPresent()) {  // 存在该用户，进行缓存并返回
+                cacheStore.putAny(nowUserCacheKey, User.class, 30, TimeUnit.MINUTES);
+                log.info("用户 [{}] 登录系统", userInStorage.get().getRealName());
+                return userInStorage.get();
+            }
+            log.debug("登录失败，openId: [{}]", openId);
+            return null;
+        });
     }
 
     @Override
-    public Optional<User> getByRealName(String realName) {
-        return userRepository.findByRealName(realName);
-    }
-
-    @Override
-    public User getByRealNameOfNonNull(String realName) {
-        return getByRealName(realName).orElseThrow(() -> new NotFoundException("用户名不存在").setErrorData(realName));
-    }
-
-    @Override
-    public Optional<User> getByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public User getByEmailOfNonNull(String email) {
-        return getByEmail(email).orElseThrow(() -> new NotFoundException("邮箱地址不存在").setErrorData(email));
-    }
-
-    @Override
-    public User createBy(UserParam userParam) {
-        Assert.notNull(userParam, "用户参数对象不能为 null");
-        User user = userParam.convertTo();
-        return create(user);
-    }
-
-    @Override
-    public boolean verifyUser(String realName, String email) {
-        User nowUser = getCurrentUser().orElseThrow(() -> new BadRequestException("无有效用户"));
-        return nowUser.getRealName().equals(realName) && nowUser.getEmail().equals(email);
-    }
-
-    @Override
-    public User create(User user) {
-        if (count() != 0) {
-            throw new BadRequestException("当前系统不允许多个用户同时存在");
+    @Nullable
+    public User updateUserByParam(@Nullable User user, @NonNull UserParam param) {
+        if (user == null) { // 缓存中没有用户信息
+            user = userRepository.findByStudentNo(param.getStudentNo()).orElse(null);
+            if (user == null) { // 数据库中也没有用户信息
+                return null;
+            }
         }
-        User newUser = super.create(user);
-        eventPublisher.publishEvent(new UserUpdatedEvent(this, newUser.getId()));
-
-        return newUser;
+        param.update(user);
+        eventPublisher.publishEvent(new UserUpdatedEvent(param, user.getId()));
+        cacheStore.putAny(USER_CACHE_PREFIX + user.getWxId(), User.class, 30, TimeUnit.MINUTES);
+        return user;
     }
 }

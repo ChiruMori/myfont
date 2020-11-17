@@ -20,7 +20,7 @@ import static work.cxlm.model.support.QfzsConst.USER_HOME;
  * @author cxlm
  */
 @Data
-@ConfigurationProperties("my-font")
+@ConfigurationProperties("qfzs")
 public class QfzsProperties {
 
     /**
@@ -67,5 +67,20 @@ public class QfzsProperties {
      * 版本号
      */
     private String version = "unknown";
+
+    /**
+     * 小程序 ID
+     */
+    private String appId = "";
+
+    /**
+     * 小程序密钥
+     */
+    private String appSecret = "";
+
+    /**
+     * 请求 URL
+     */
+    private String appRequestUrl = "https://api.weixin.qq.com/sns/jscode2session";
 
 }

@@ -63,7 +63,7 @@ public class ValidationUtils {
      * 校验可迭代类型
      *
      * @param objs   待校验的可迭代实例
-     * @param groups 校验类集合
+     * @param groups 校验分组
      */
     public static void validate(@Nullable Iterable<?> objs, @Nullable Class<?>... groups) {
         if (objs == null) {
@@ -75,6 +75,7 @@ public class ValidationUtils {
         final Set<ConstraintViolation<?>> allViolations = new LinkedHashSet<>();
         objs.forEach(obj -> {
             int useIndex = wrappedIndex.getAndIncrement();
+            // 得到分组校验结果
             Set<? extends ConstraintViolation<?>> violations = validator.validate(obj, groups);
             violations.forEach(v -> {
                 // 为指定的验证设置迭代索引

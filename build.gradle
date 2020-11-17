@@ -48,6 +48,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-freemarker"
     // 封装了表单验证相关注解
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    // Emoji 处理工具类
+    implementation group: 'com.github.binarywang', name: 'java-emoji-converter', version: '1.0.1'
+    // Http 请求工具
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
+
 
     implementation "com.sun.mail:jakarta.mail"
     implementation "cn.hutool:hutool-core:$hutoolVersion"
@@ -73,4 +78,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+}
+
+test {
+    useJUnitPlatform()
 }

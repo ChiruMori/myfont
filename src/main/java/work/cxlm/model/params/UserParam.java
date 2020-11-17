@@ -1,38 +1,57 @@
 package work.cxlm.model.params;
 
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.validator.constraints.Range;
 import work.cxlm.model.dto.base.InputConverter;
 import work.cxlm.model.entity.User;
-import work.cxlm.model.support.CreateCheck;
-import work.cxlm.model.support.UpdateCheck;
+import work.cxlm.model.enums.UserGender;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
+import javax.persistence.Column;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
- * 用户表单
- * created 2020/10/21 23:29
+ * 用户更新信息时填写的表单，如果前端要求指定字段名，需要重写 convertTo 方法
+ * created 2020/11/17 22:48
  *
- * @author johnniang
- * @author cxlm
+ * @author Chiru
  */
 @Data
 public class UserParam implements InputConverter<User> {
 
-    @NotBlank(message = "用户名不能为空", groups = {CreateCheck.class, UpdateCheck.class})
-    @Size(max = 50, message = "用户名的字符长度不能超过 {max}", groups = {CreateCheck.class, UpdateCheck.class})
-    private String username;
+    @Size(max = 30, message = "openId 长度不能超过 {max}")
+    private String wxId;
 
-    @NotBlank(message = "用户昵称不能为空", groups = {CreateCheck.class, UpdateCheck.class})
-    @Size(max = 255, message = "用户昵称的字符长度不能超过 {max}", groups = {CreateCheck.class, UpdateCheck.class})
-    private String nickname;
+    @Size(max = 100, message = "微信名长度不能超过 {max}")
+    private String wxName;
 
-    @Email(message = "电子邮件地址的格式不正确", groups = {CreateCheck.class, UpdateCheck.class})
-    @NotBlank(message = "电子邮件地址不能为空", groups = {CreateCheck.class, UpdateCheck.class})
-    @Size(max = 127, message = "电子邮件的字符长度不能超过 {max}", groups = {CreateCheck.class, UpdateCheck.class})
+    @Size(max = 15, message = "学工号长度不能超过 {max}")
+    private String studentNo;
+
+    @Size(max = 50, message = "学院名长度不能超过 {max}")
+    private String institute;
+
+    @Size(max = 60, message = "专业名长度不能超过 {max}")
+    private String major;
+
+    @Max(value = 2120, message = "错误的入学年份")
+    @Min(value = 1920, message = "错误的入学年份")
+    private int enrollYear;
+
+    @Size(max = 30, message = "真实姓名长度不能超过 {max}")
+    private String realName;
+
+    private UserGender gender;
+
+    @Size(max = 255, message = "头像链接长度不能超过 {max}")
+    private String head;
+
+    @Size(max = 255, message = "个性签名长度不能超过 {max}")
+    private String sign;
+
+    @Size(max = 60, message = "邮箱地址长度不能超过 {max}")
     private String email;
 
 }
-

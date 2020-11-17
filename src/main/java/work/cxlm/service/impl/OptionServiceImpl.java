@@ -118,7 +118,7 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     }
 
     @Override
-    public void update(Integer optionId, OptionParam optionParam) {
+    public void update(@NonNull Integer optionId, OptionParam optionParam) {
         Assert.notNull(optionId, "配置项 ID 不能为 null");
         Option toUpdate = getById(optionId);
         optionParam.update(toUpdate);
@@ -127,14 +127,14 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     }
 
     @Override
-    public void saveProperty(PropertyEnum property, String value) {
+    public void saveProperty(@NonNull PropertyEnum property, String value) {
         Assert.notNull(property, "property 不能为 null");
         save(Collections.singletonMap(property.getValue(), value));  // 只有一个元素，无需事务
     }
 
     @Override
     @Transactional
-    public void saveProperties(Map<? extends PropertyEnum, String> properties) {
+    public void saveProperties(@NonNull Map<? extends PropertyEnum, String> properties) {
         if (CollectionUtils.isEmpty(properties)) {
             return;
         }
@@ -149,6 +149,7 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
      * @param keys 需要列出的 key 列表
      */
     @Override
+    @NonNull
     public Map<String, Object> listOptions(List<String> keys) {
         if (CollectionUtils.isEmpty(keys)) {
             return Collections.emptyMap();
@@ -165,6 +166,7 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
      * 列出全部系统配置项，包括配置过的值和系统默认值
      */
     @Override
+    @NonNull
     @SuppressWarnings("unchecked")
     public Map<String, Object> listOptions() {
         // 优先查找缓存，如果没有则执行查询
@@ -207,14 +209,15 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     }
 
     @Override
-    public Page<OptionSimpleDTO> pageDTOsBy(Pageable pageable, OptionQuery optionQuery) {
+    public Page<OptionSimpleDTO> pageDTOsBy(@NonNull Pageable pageable, OptionQuery optionQuery) {
         Assert.notNull(pageable, "Pageable 对象不能为 null");
         Page<Option> optionPage = optionRepository.findAll(buildSpecByQuery(optionQuery), pageable);
         return optionPage.map(this::convertToDTO);
     }
 
     @Override
-    public OptionSimpleDTO convertToDTO(Option option) {
+    @NonNull
+    public OptionSimpleDTO convertToDTO(@NonNull Option option) {
         Assert.notNull(option, "Option 不能为 null");
 
         return new OptionSimpleDTO().convertFrom(option);
@@ -241,79 +244,81 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     }
 
     @Override
-    public Option removePermanently(Integer id) {
+    @NonNull
+    public Option removePermanently(@NonNull Integer id) {
         Option removedOption = removeById(id);
         publishOptionUpdateEvent();
         return removedOption;
     }
 
     @Override
-    public Object getByKeyOfNullable(String key) {
+    public Object getByKeyOfNullable(@NonNull String key) {
         return getByKey(key).orElse(null);
     }
 
     @Override
-    public Object getByKeyOfNonNull(String key) {
+    @NonNull
+    public Object getByKeyOfNonNull(@NonNull String key) {
         return getByKey(key).orElseThrow(() -> new MissingPropertyException("必须传递 key 参数"));
     }
 
     @Override
-    public Object getByPropertyOfNullable(PropertyEnum property) {
+    public Object getByPropertyOfNullable(@NonNull PropertyEnum property) {
         return getByProperty(property).orElse(null);
     }
 
     @Override
-    public Object getByPropertyOfNonNull(PropertyEnum property) {
+    public Object getByPropertyOfNonNull(@NonNull PropertyEnum property) {
         Assert.notNull(property, "property 不能为 null");
         return getByKeyOfNonNull(property.getValue());
     }
 
     @Override
-    public Optional<Object> getByProperty(PropertyEnum property) {
+    public Optional<Object> getByProperty(@NonNull PropertyEnum property) {
         Assert.notNull(property, "property 不能为 null");
         return getByKey(property.getValue());
     }
 
     @Override
-    public <T> Optional<T> getByProperty(PropertyEnum property, Class<T> type) {
+    public <T> Optional<T> getByProperty(@NonNull PropertyEnum property, @NonNull Class<T> type) {
         Assert.notNull(property, "property 不能为 null");
         return getByProperty(property).map(val -> PropertyEnum.convertTo(val.toString(), type));
     }
 
     @Override
-    public <T> T getByPropertyOrDefault(PropertyEnum property, Class<T> type, T defaultValue) {
+    public <T> T getByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class<T> type, T defaultValue) {
         return getByProperty(property, type).orElse(defaultValue);
     }
 
     @Override
-    public <T> T getByPropertyOrDefault(PropertyEnum property, Class<T> type) {
+    public <T> T getByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class<T> type) {
         return getByProperty(property, type).orElse(property.defaultValue(type));
     }
 
     @Override
-    public <T> T getByKeyOrDefault(String key, Class<T> valueType, T defaultValue) {
+    public <T> T getByKeyOrDefault(@NonNull String key, @NonNull Class<T> valueType, T defaultValue) {
         return getByKey(key, valueType).orElse(defaultValue);
     }
 
     @Override
-    public <T> Optional<T> getByKey(String key, Class<T> valueType) {
+    public <T> Optional<T> getByKey(@NonNull String key, @NonNull Class<T> valueType) {
         return getByKey(key).map(v -> PropertyEnum.convertTo(v.toString(), valueType));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<Object> getByKey(String key) {
+    public Optional<Object> getByKey(@NonNull String key) {
         Assert.hasText(key, "键不能为 null");
         return Optional.ofNullable(listOptions().get(key));
     }
 
     @Override
-    public <T extends Enum<T>> Optional<T> getEnumByProperty(PropertyEnum property, Class<T> valueType) {
+    public <T extends Enum<T>> Optional<T> getEnumByProperty(@NonNull PropertyEnum property, @NonNull Class<T> valueType) {
         return getByProperty(property).map(v -> PropertyEnum.convertToEnum(v.toString(), valueType));
     }
 
     @Override
-    public <T extends Enum<T>> T getEnumByPropertyOrDefault(PropertyEnum property, Class<T> valueType, T defaultValue) {
+    public <T extends Enum<T>> T getEnumByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class<T> valueType, T defaultValue) {
         return getEnumByProperty(property, valueType).orElse(defaultValue);
     }
 
@@ -323,7 +328,8 @@ public class OptionServiceImpl extends AbstractCrudService<Option, Integer> impl
     }
 
     @Override
-    public <T, E extends ValueEnum<T>> E getValueEnumByPropertyOrDefault(PropertyEnum property, Class<T> valueType, Class<E> enumType, E defaultValue) {
+    public <T, E extends ValueEnum<T>> E getValueEnumByPropertyOrDefault(@NonNull PropertyEnum property, @NonNull Class<T> valueType,
+                                                                         @NonNull Class<E> enumType, E defaultValue) {
         return getValueEnumByProperty(property, valueType, enumType).orElse(defaultValue);
     }
 

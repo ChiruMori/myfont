@@ -4,7 +4,7 @@ server:
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-  datasource: # 数据库配置
+  datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/key3?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=UTC
@@ -16,14 +16,10 @@ spring:
     show-sql: false
   profiles:
     active: dev
-#  mail:
-#    host: smtp.ym.163.com
-#    port: 465
-#    username: cxlm@cxlm.work
-#    password: "**************"
-#    from: "MyFont 后台管理"
 
-my-font:
-#  download-timeout: 5m
+qfzs:
   cache: level
   version: @app_version@
+  app-id: wx037c071037531864
+  app-secret: ea3d953e26b9c76b07e43b99f9c8375a
+  app-request-url: "https://api.weixin.qq.com/sns/jscode2session"

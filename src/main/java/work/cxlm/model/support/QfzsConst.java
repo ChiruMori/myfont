@@ -55,4 +55,8 @@ public class QfzsConst {
      */
     public final static String DEFAULT_USER_SIGNATURE = "这家伙很懒，什么都没写。。。";
 
+    /**
+     * openId 缓存用户时的缓存前缀
+     */
+    public final static String USER_CACHE_PREFIX = "user_";
 }
