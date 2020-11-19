@@ -1,6 +1,7 @@
 package work.cxlm.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 /**
  * BeanUtils 转换过程中的异常
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
  * @author johnniang
  * @author cxlm
  */
-public class BeanUtilsException extends AbstractMyFontException {
+public class BeanUtilsException extends AbstractQfzsException {
 
     public BeanUtilsException(String message) {
         super(message);
@@ -20,6 +21,7 @@ public class BeanUtilsException extends AbstractMyFontException {
     }
 
     @Override
+    @NonNull
     public HttpStatus getStatus() {
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

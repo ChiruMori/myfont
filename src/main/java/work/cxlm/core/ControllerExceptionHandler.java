@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import work.cxlm.exception.AbstractMyFontException;
+import work.cxlm.exception.AbstractQfzsException;
 import work.cxlm.model.support.BaseResponse;
 import work.cxlm.utils.ValidationUtils;
 
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author johnniang
  * @author Chiru
  */
-@RestControllerAdvice({"work.cxlm.controller.admin.api"})
+@RestControllerAdvice({"work.cxlm.controller"})
 @Slf4j
 public class ControllerExceptionHandler {
 
@@ -109,8 +109,8 @@ public class ControllerExceptionHandler {
         return baseResponse;
     }
 
-    @ExceptionHandler(AbstractMyFontException.class)
-    public ResponseEntity<BaseResponse<?>> handleHaloException(AbstractMyFontException e) {
+    @ExceptionHandler(AbstractQfzsException.class)
+    public ResponseEntity<BaseResponse<?>> handleHaloException(AbstractQfzsException e) {
         BaseResponse<Object> baseResponse = handleBaseException(e);
         baseResponse.setStatus(e.getStatus().value());
         baseResponse.setData(e.getErrorData());

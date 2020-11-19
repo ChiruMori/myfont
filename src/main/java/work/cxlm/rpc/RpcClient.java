@@ -1,4 +1,4 @@
-package work.cxlm.model.rpc;
+package work.cxlm.rpc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import work.cxlm.model.rpc.GetParam;
 
 import java.util.Map;
 
@@ -56,6 +55,8 @@ public class RpcClient {
         Assert.notNull(type, "返回值类型不能为 null");
 
         RestTemplate restTemplate = new RestTemplate();
+        // 为微信的接口设置单独的转换器
+        restTemplate.getMessageConverters().add(new WxMappingJackson2HttpMessageConverter());
         ResponseEntity<T> forEntity = restTemplate.getForEntity(url, type);
         return forEntity.getBody();
     }

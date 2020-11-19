@@ -20,31 +20,31 @@ import javax.validation.Valid;
 @RequestMapping("/key3/admin/")
 public class AdminController {
 
-    private final AdminService adminService;
+//    private final AdminService adminService;
+//
+//    public AdminController(AdminService adminService) {
+//        this.adminService = adminService;
+//    }
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+//    @ApiOperation("登录")
+//    @CacheLock(autoDelete = false, prefix = "login_check")
+//    @PostMapping("/login")
+//    public void authLogin(@RequestBody @Valid LoginParam loginParam) {
+//        adminService.authenticate(loginParam);
+//    }
 
-    @ApiOperation("登录")
-    @CacheLock(autoDelete = false, prefix = "login_check")
-    @PostMapping("/login")
-    public void authLogin(@RequestBody @Valid LoginParam loginParam) {
-        adminService.authenticate(loginParam);
-    }
-
-    @ApiOperation("登出")
-    @CacheLock(autoDelete = false)
-    @PostMapping("/logout")
-    public void logout() {
-        adminService.clearToken();
-    }
-
-    @ApiOperation("刷新 Token")
-    @PostMapping("refresh/{refreshToken}")
-    @CacheLock(autoDelete = false)
-    public AuthToken refresh(@PathVariable("refreshToken") String refreshToken) {
-        return adminService.refreshToken(refreshToken);
-    }
+//    @ApiOperation("登出")
+//    @CacheLock(autoDelete = false)
+//    @PostMapping("/logout")
+//    public void logout() {
+//        adminService.clearToken();
+//    }
+//
+//    @ApiOperation("刷新 Token")
+//    @PostMapping("refresh/{refreshToken}")
+//    @CacheLock(autoDelete = false)
+//    public AuthToken refresh(@PathVariable("refreshToken") String refreshToken) {
+//        return adminService.refreshToken(refreshToken);
+//    }
 
 }

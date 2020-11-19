@@ -1,4 +1,4 @@
-package work.cxlm.model.rpc.code2session;
+package work.cxlm.rpc.code2session;
 
 import lombok.Data;
 

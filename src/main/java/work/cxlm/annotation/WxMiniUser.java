@@ -1,5 +1,7 @@
 package work.cxlm.annotation;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -11,5 +13,14 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface OpenIdUser {
+public @interface WxMiniUser {
+
+    /**
+     * 是否要求必须存在 openId，且未过期，如果设为 true，则 openId 无效时会抛出 BadRequest
+     */
+    @AliasFor("deny")
+    boolean value() default true;
+
+    @AliasFor("value")
+    boolean deny() default true;
 }

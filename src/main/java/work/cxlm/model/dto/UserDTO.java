@@ -13,35 +13,18 @@ import javax.persistence.Column;
 import java.util.Date;
 
 /**
+ * 用户的全部信息
  * created 2020/11/15 10:47
  *
  * @author johnniang
  * @author Chiru
  */
 @Data
-@ToString
-@EqualsAndHashCode
-public class UserDTO implements OutputConverter<UserDTO, User> {
-
-    private String wxId;
-
-    private String wxName;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class UserDTO extends SimpleUserDTO implements OutputConverter<UserDTO, User> {
 
     private String studentNo;
-
-    private String institute;
-
-    private String major;
-
-    private int enrollYear;
-
-    private String realName;
-
-    private UserGender gender;
-
-    private String head;
-
-    private String sign;
 
     private String email;
 

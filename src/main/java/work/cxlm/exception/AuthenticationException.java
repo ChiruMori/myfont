@@ -1,6 +1,7 @@
 package work.cxlm.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 /**
  * created 2020/11/15 14:19
@@ -8,7 +9,7 @@ import org.springframework.http.HttpStatus;
  * @author johnniang
  * @author Chiru
  */
-public class AuthenticationException extends AbstractMyFontException {
+public class AuthenticationException extends AbstractQfzsException {
 
     public AuthenticationException(String message) {
         super(message);
@@ -19,6 +20,7 @@ public class AuthenticationException extends AbstractMyFontException {
     }
 
     @Override
+    @NonNull
     public HttpStatus getStatus() {
         return HttpStatus.UNAUTHORIZED;
     }

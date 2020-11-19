@@ -1,6 +1,7 @@
 package work.cxlm.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 /**
  * created 2020/10/21 11:35
@@ -8,7 +9,7 @@ import org.springframework.http.HttpStatus;
  * @author cxlm
  * @author johnniang
  */
-public class NotFoundException extends AbstractMyFontException {
+public class NotFoundException extends AbstractQfzsException {
 
     public NotFoundException(String message) {
         super(message);
@@ -19,6 +20,7 @@ public class NotFoundException extends AbstractMyFontException {
     }
 
     @Override
+    @NonNull
     public HttpStatus getStatus() {
         return HttpStatus.NOT_FOUND;
     }

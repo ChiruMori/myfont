@@ -28,7 +28,7 @@ public class SecurityUtils {
     @NonNull
     public static String buildAccessTokenKey(@NonNull String accessToken) {
         Assert.hasText(accessToken, "Access Token 不能为空");
-        return TOKEN_REFRESH_CACHE_PREFIX + accessToken;
+        return TOKEN_ACCESS_CACHE_PREFIX + accessToken;
     }
 
     @NonNull

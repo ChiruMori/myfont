@@ -1,6 +1,6 @@
 logging:
   level:
-    worl.cxlm: DEBUG
+    work.cxlm: DEBUG
     org.hibernate: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
     org.hibernate.type.descriptor.sql.BasicExtractor: INFO
@@ -13,7 +13,7 @@ spring:
   cache:
     type: none
 
-my-font:
+qfzs:
   doc-disabled: false
   production-env: false
 #  auth-enabled: true

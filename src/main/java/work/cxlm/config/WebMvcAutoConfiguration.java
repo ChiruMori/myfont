@@ -16,9 +16,11 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.lang.NonNull;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -41,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Configuration
-public class WebMvcAutoConfiguration implements WebMvcConfigurer {
+public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport {
 
     private static final String FILE_PROTOCOL = "file:///";
 
@@ -164,7 +166,8 @@ public class WebMvcAutoConfiguration implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-    @Bean
+    @Override
+    @NonNull
     public RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
         return new QfzsRequestMappingHandlerMapping(qfzsProperties);
     }

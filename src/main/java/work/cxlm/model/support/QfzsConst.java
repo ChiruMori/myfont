@@ -3,7 +3,6 @@ package work.cxlm.model.support;
 import org.springframework.http.HttpHeaders;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * 公共常量
@@ -51,6 +50,21 @@ public class QfzsConst {
      */
     public final static String API_ACCESS_KEY_QUERY_NAME = "api_access_key";
     /**
+     * 一次性口令查询键
+     */
+    public final static String ONE_TIME_TOKEN_QUERY_NAME = "ott";
+    public final static String ONE_TIME_TOKEN_HEADER_NAME = "ott";
+
+    /**
+     * 微信小程序登录凭证验证使用的键
+     */
+    public final static String WX_MINI_TOKEN_HEADER_NAME = "MINI-" + HttpHeaders.AUTHORIZATION;
+    /**
+     * 微信小程序登录凭证验证使用的键
+     */
+    public final static String WX_MINI_TOKEN_QUERY_NAME = "mini_token_" + HttpHeaders.AUTHORIZATION;
+
+    /**
      * 默认个性签名
      */
     public final static String DEFAULT_USER_SIGNATURE = "这家伙很懒，什么都没写。。。";
@@ -58,5 +72,11 @@ public class QfzsConst {
     /**
      * openId 缓存用户时的缓存前缀
      */
+    @Deprecated
     public final static String USER_CACHE_PREFIX = "user_";
+
+    /**
+     * 管理员登录时使用的 Passcode 缓存前缀
+     */
+    public final static String ADMIN_PASSCODE_PREFIX = "admin_pass_";
 }

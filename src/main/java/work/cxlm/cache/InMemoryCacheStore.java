@@ -1,6 +1,7 @@
 package work.cxlm.cache;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import javax.annotation.PreDestroy;
@@ -49,14 +50,14 @@ public class InMemoryCacheStore extends AbstractStringCacheStore {
     }
 
     @Override
-    Optional<CacheWrapper<String>> gerInternal(String key) {
+    Optional<CacheWrapper<String>> gerInternal(@NonNull String key) {
         Assert.hasText(key, "缓存键不能为空");
 
         return Optional.ofNullable(CACHE_CONTAINER.get(key));
     }
 
     @Override
-    void putInternal(String key, CacheWrapper<String> value) {
+    void putInternal(@NonNull String key, @NonNull CacheWrapper<String> value) {
         Assert.hasText(key, "缓存键不能为空");
         Assert.notNull(value, "缓存值不能为 null");
 
@@ -65,7 +66,7 @@ public class InMemoryCacheStore extends AbstractStringCacheStore {
     }
 
     @Override
-    Boolean putInternalIfAbsent(String key, CacheWrapper<String> value) {
+    Boolean putInternalIfAbsent(@NonNull String key, @NonNull CacheWrapper<String> value) {
         Assert.hasText(key, "缓存键不能为空");
         Assert.notNull(value, "缓存值不能为 null");
 
@@ -88,7 +89,7 @@ public class InMemoryCacheStore extends AbstractStringCacheStore {
     }
 
     @Override
-    public void delete(String key) {
+    public void delete(@NonNull String key) {
         Assert.hasText(key, "缓存键不能为空");
 
         CACHE_CONTAINER.remove(key);
@@ -103,7 +104,7 @@ public class InMemoryCacheStore extends AbstractStringCacheStore {
         @Override
         public void run() {
             CACHE_CONTAINER.keySet().forEach(k -> {
-                if (InMemoryCacheStore.this.get(k).isEmpty()) {
+                if (!InMemoryCacheStore.this.get(k).isPresent()) {
                     log.debug("已删除缓存：[{}]", k);
                 }
             });

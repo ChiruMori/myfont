@@ -8,7 +8,7 @@ spring:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/key3?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=UTC
-    username: root
+    username: chiru
     password: DB_mima~9749
   jpa:
     hibernate:

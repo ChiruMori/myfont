@@ -8,15 +8,15 @@ import org.springframework.lang.Nullable;
  * @author cxlm
  * created 2020/10/19 14:29
  */
-public abstract class AbstractMyFontException extends RuntimeException {
+public abstract class AbstractQfzsException extends RuntimeException {
 
     private Object errData;
 
-    public AbstractMyFontException(String msg) {
+    public AbstractQfzsException(String msg) {
         super(msg);
     }
 
-    public AbstractMyFontException(String msg, Throwable cause) {
+    public AbstractQfzsException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractMyFontException extends RuntimeException {
      * 设置详细错误数据
      */
     @NonNull
-    public AbstractMyFontException setErrorData(@Nullable Object errData) {
+    public AbstractQfzsException setErrorData(@Nullable Object errData) {
         this.errData = errData;
         return this;
     }

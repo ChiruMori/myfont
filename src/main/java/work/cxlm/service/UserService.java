@@ -1,11 +1,16 @@
 package work.cxlm.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import work.cxlm.exception.NotFoundException;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.params.UserLoginParam;
 import work.cxlm.model.params.UserParam;
+import work.cxlm.model.vo.PageUserVO;
+import work.cxlm.model.vo.PasscodeVO;
+import work.cxlm.security.token.AuthToken;
 import work.cxlm.service.base.CrudService;
 
 import java.util.Optional;
@@ -54,6 +59,7 @@ public interface UserService extends CrudService<User, Integer> {
 
     /**
      * 通过用户登录凭证获取 openId
+     *
      * @param code 登录凭证
      * @return openId，可能为 null
      */
@@ -62,18 +68,36 @@ public interface UserService extends CrudService<User, Integer> {
 
     /**
      * 用户使用 openId 登录，通过小程序登录
+     *
      * @param openId 小程序中得到的 openId，用户唯一标识
-     * @return 登录后的用户，可能为 Null
+     * @return 登录后的用户凭证
      */
     @Nullable
-    User login(@Nullable String openId);
+    AuthToken login(@Nullable String openId);
 
     /**
      * 通过表单更新用户信息
-     * @param user 已存在的用户，从缓存中获得，可能为 null
+     *
+     * @param user  已存在的用户，从缓存中获得，可能为 null
      * @param param 填写的表单
      * @return 更新后的用户，如果找不到对应的用户将返回 null
      */
     @Nullable
     User updateUserByParam(@Nullable User user, @NonNull UserParam param);
+
+    @NonNull
+    Page<PageUserVO> getClubUserPage(User me, @Nullable Integer clubId, Pageable pageable);
+
+    /**
+     * 使用用户创建 Passcode 传输对象
+     *
+     * @param user 用户，只应该是管理员用户，如果是普通用户则得到异常
+     */
+    @NonNull
+    PasscodeVO getPasscode(User user);
+
+    /**
+     * 刷新用户登录凭证到期事件
+     */
+    AuthToken refreshToken(String refreshToken);
 }

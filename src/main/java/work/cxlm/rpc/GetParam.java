@@ -1,4 +1,4 @@
-package work.cxlm.model.rpc;
+package work.cxlm.rpc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.lang.NonNull;

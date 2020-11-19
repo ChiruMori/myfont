@@ -3,7 +3,7 @@ ${AnsiColor.BLUE}
     . |   .  |     /
    /  |  /   |    ____/
 __/  ___/  __| __/
-${AnsiColor.BLACK}
+${AnsiColor.MAGENTA}
 你可拜瞅了，瞅也跑不起来！
 ${AnsiColor.BRIGHT_YELLOW}
 Version: 3.0-SNAPSHOT

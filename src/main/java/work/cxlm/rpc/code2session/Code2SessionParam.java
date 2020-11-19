@@ -1,8 +1,8 @@
-package work.cxlm.model.rpc.code2session;
+package work.cxlm.rpc.code2session;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import work.cxlm.model.rpc.GetParam;
+import work.cxlm.rpc.GetParam;
 
 /**
  * created 2020/11/17 16:22

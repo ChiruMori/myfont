@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.StringUtils;
 import work.cxlm.model.enums.UserGender;
+import work.cxlm.model.enums.UserRole;
 import work.cxlm.model.support.QfzsConst;
 
 import javax.persistence.*;
@@ -33,7 +34,7 @@ public class User extends BaseEntity {
     /**
      * 微信 ID，openId
      */
-    @Column(name = "username", length = 30)
+    @Column(name = "wx_id", length = 30)
     private String wxId;
 
     /**
@@ -97,6 +98,13 @@ public class User extends BaseEntity {
      */
     @Column(name = "email", length = 60)
     private String email;
+
+    /**
+     * 用户角色
+     */
+    @Column(name = "role")
+    @ColumnDefault("0")
+    private UserRole role;
 
     @Override
     public void prePersist() {
