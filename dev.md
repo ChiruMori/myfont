@@ -43,11 +43,9 @@ _注意，因为系统开发时，分支切换的影响。下文中名称中 MyF
 
 + Repository (work.cxlm.repository)
     + BaseRepository 对主键的集合操作相关方法进行了声明，不生成 Bean
-    + CompositeRepository 功能同上，对联合主键的查询做了支持
 + Service (work.cxlm.service.base)
     + CrudService 声明与数据库交互、完成常规 CRUD 操作的 service 通用方法。其中泛型 `DOMAIN`、`ID` 分别表示操作的实体类、实体主键类型
     + AbstractCrudService 实现上述接口的全部方法，需要子类继承时传入 repository 即可使用
-    + CompositeCrudService、AbstractCompositeCrudService 用途同上，针对联合主键做了一些支持与处理
 + Controller (作用目标 work.cxlm.controller)
     + work.cxlm.annotation
         + DisableOnCondition 注解及相关切面（aspect）、解析器，作用于 Controller 方法上，可以限制在某些情况下（通常为系统配置的调整）禁用 API
@@ -75,6 +73,7 @@ _注意，因为系统开发时，分支切换的影响。下文中名称中 MyF
 > 系统中各类使用的枚举类，通常为实体类使用
 
 + work.cxlm.model.enums
+    + converter 提供了与实体相关枚举类的转换方法
     + support.StringToEnumConverterFactor 转化类工厂，传入目标枚举类的类对象，可以得到转化对象。用于将字符串转化为对应的枚举类
     + ValueEnum 需要映射为值的枚举类接口
     

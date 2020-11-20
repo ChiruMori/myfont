@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.util.StringUtils;
 import work.cxlm.model.enums.UserGender;
 import work.cxlm.model.enums.UserRole;
@@ -65,8 +64,7 @@ public class User extends BaseEntity {
      * 入学年份
      */
     @Column(name = "enroll_year")
-    @Range(min = 1920, max = 2120)
-    private int enrollYear;
+    private Integer enrollYear;
 
     /**
      * 真实姓名

@@ -78,26 +78,28 @@ public interface UserService extends CrudService<User, Integer> {
     /**
      * 通过表单更新用户信息
      *
-     * @param user  已存在的用户，从缓存中获得，可能为 null
      * @param param 填写的表单
      * @return 更新后的用户，如果找不到对应的用户将返回 null
      */
     @Nullable
-    User updateUserByParam(@Nullable User user, @NonNull UserParam param);
+    User updateUserByParam(@NonNull UserParam param);
 
     @NonNull
-    Page<PageUserVO> getClubUserPage(User me, @Nullable Integer clubId, Pageable pageable);
+    Page<PageUserVO> getClubUserPage(@Nullable Integer clubId, Pageable pageable);
 
     /**
      * 使用用户创建 Passcode 传输对象
-     *
-     * @param user 用户，只应该是管理员用户，如果是普通用户则得到异常
      */
     @NonNull
-    PasscodeVO getPasscode(User user);
+    PasscodeVO getPasscode();
 
     /**
      * 刷新用户登录凭证到期事件
      */
     AuthToken refreshToken(String refreshToken);
+
+    /**
+     * 通过 openId 查询用户信息
+     */
+    User getByOpenId(String integer);
 }

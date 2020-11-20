@@ -45,8 +45,8 @@ public class WxMiniAuthenticationFilter extends AbstractAuthenticationFilter {
         this.userService = userService;
         // 针对用户相关的 API 接口进行过滤
         addToBlackSet("/key3/users/api/**");
-        // 排除用户登录、更新接口
-        addToWhiteSet("/key3/users/api/update", "/key3/users/api/login");
+        // 排除用户登录、更新接口、帮助接口
+        addToWhiteSet("/key3/users/api/update", "/key3/users/api/login", "/key3/users/api/help");
         DefaultAuthenticationFailureHandler failureHandler = new DefaultAuthenticationFailureHandler();
         failureHandler.setProductEnv(qfzsProperties.isProductionEnv());
         failureHandler.setObjectMapper(objectMapper);
@@ -60,13 +60,13 @@ public class WxMiniAuthenticationFilter extends AbstractAuthenticationFilter {
         if (StringUtils.isBlank(token)) {
             throw new AuthenticationException("未登录，请登录后访问");
         }
-        // 从缓存中获取 user id
-        Optional<Integer> optionalUserId = cacheStore.getAny(SecurityUtils.buildAccessTokenKey(token), Integer.class);
-        if (!optionalUserId.isPresent()) {
+        // 从缓存中获取 openId
+        Optional<String> userOpenId = cacheStore.getAny(SecurityUtils.buildAccessTokenKey(token), String.class);
+        if (!userOpenId.isPresent()) {
             throw new AuthenticationException("Token 已过期或不存在").setErrorData(token);
         }
         // 从数据库中查询，并存储到安全上下文
-        User user = userService.getById(optionalUserId.get());
+        User user = userService.getByOpenId(userOpenId.get());
         UserDetail userDetail = new UserDetail(user);
         SecurityContextHolder.setContext(new SecurityContextImpl(new AuthenticationImpl(userDetail)));
         filterChain.doFilter(request, response);

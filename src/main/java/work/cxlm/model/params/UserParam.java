@@ -1,16 +1,12 @@
 package work.cxlm.model.params;
 
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.validator.constraints.Range;
 import work.cxlm.model.dto.base.InputConverter;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.enums.UserGender;
+import work.cxlm.model.support.CreateCheck;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * 用户更新信息时填写的表单，如果前端要求指定字段名，需要重写 convertTo 方法
@@ -27,6 +23,7 @@ public class UserParam implements InputConverter<User> {
     @Size(max = 100, message = "微信名长度不能超过 {max}")
     private String wxName;
 
+    @NotEmpty(message = "学号不能为空", groups = CreateCheck.class)
     @Size(max = 15, message = "学工号长度不能超过 {max}")
     private String studentNo;
 
@@ -36,8 +33,6 @@ public class UserParam implements InputConverter<User> {
     @Size(max = 60, message = "专业名长度不能超过 {max}")
     private String major;
 
-    @Max(value = 2120, message = "错误的入学年份")
-    @Min(value = 1920, message = "错误的入学年份")
     private int enrollYear;
 
     @Size(max = 30, message = "真实姓名长度不能超过 {max}")

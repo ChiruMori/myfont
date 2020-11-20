@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import work.cxlm.model.entity.Joining;
 import work.cxlm.model.entity.id.JoiningId;
-import work.cxlm.service.base.CompositeCrudService;
+import work.cxlm.service.base.CrudService;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
  *
  * @author Chiru
  */
-public interface JoiningService extends CompositeCrudService<Joining, JoiningId> {
+public interface JoiningService extends CrudService<Joining, JoiningId> {
     /**
      * 根据社团 ID 列出全部 Joining 实体
      */
