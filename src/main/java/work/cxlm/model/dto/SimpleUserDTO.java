@@ -22,7 +22,7 @@ public class SimpleUserDTO {
 
     private String major;
 
-    private int enrollYear;
+    private Integer enrollYear;
 
     private String realName;
 

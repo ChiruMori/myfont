@@ -1,5 +1,7 @@
 package work.cxlm.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import work.cxlm.model.entity.Joining;
 import work.cxlm.model.entity.id.JoiningId;
 
@@ -10,5 +12,15 @@ import java.util.List;
  *
  * @author Chiru
  */
-public interface JoiningRepository extends CompositeRepository<Joining, JoiningId> {
+public interface JoiningRepository extends BaseRepository<Joining, JoiningId> {
+
+    /**
+     * 通过联合主键的 clubId 查找所有 Joining 实体
+     */
+    Page<Joining> findAllByIdClubId(Integer clubId, Pageable pageable);
+
+    /**
+     * 通过联合主键的 userId 查找所有 Joining 实体
+     */
+    Page<Joining> findAllByIdUserId(Integer userId, Pageable pageable);
 }

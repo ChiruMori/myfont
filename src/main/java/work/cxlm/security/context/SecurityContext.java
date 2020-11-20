@@ -27,6 +27,6 @@ public interface SecurityContext {
      * 获取当前安全上下文是否已存在合法登录凭证
      */
     default boolean isAuthenticated() {
-        return getAuthentication() == null;
+        return getAuthentication() != null;
     }
 }

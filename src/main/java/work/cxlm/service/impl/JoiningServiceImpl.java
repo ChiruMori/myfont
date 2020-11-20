@@ -8,9 +8,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import work.cxlm.model.entity.Joining;
 import work.cxlm.model.entity.id.JoiningId;
-import work.cxlm.repository.CompositeRepository;
+import work.cxlm.repository.JoiningRepository;
 import work.cxlm.service.JoiningService;
-import work.cxlm.service.base.AbstractCompositeCrudService;
+import work.cxlm.service.base.AbstractCrudService;
 
 import java.util.Optional;
 
@@ -21,10 +21,13 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-public class JoiningServiceImpl extends AbstractCompositeCrudService<Joining, JoiningId> implements JoiningService {
+public class JoiningServiceImpl extends AbstractCrudService<Joining, JoiningId> implements JoiningService {
 
-    protected JoiningServiceImpl(CompositeRepository<Joining, JoiningId> repository) {
-        super(repository);
+    private final JoiningRepository joiningRepository;
+
+    protected JoiningServiceImpl(JoiningRepository joiningRepository) {
+        super(joiningRepository);
+        this.joiningRepository = joiningRepository;
     }
 
     @NonNull
@@ -33,9 +36,7 @@ public class JoiningServiceImpl extends AbstractCompositeCrudService<Joining, Jo
         if (clubId == null) {
             return Page.empty();
         }
-        JoiningId id = new JoiningId();
-        id.setClubId(clubId);
-        return pageAllById(id, pageable);
+        return joiningRepository.findAllByIdClubId(clubId, pageable);
     }
 
     @NonNull
@@ -44,9 +45,7 @@ public class JoiningServiceImpl extends AbstractCompositeCrudService<Joining, Jo
         if (userId == null) {
             return Page.empty();
         }
-        JoiningId id = new JoiningId();
-        id.setUserId(userId);
-        return pageAllById(id, pageable);
+        return joiningRepository.findAllByIdUserId(userId, pageable);
     }
 
     @Override

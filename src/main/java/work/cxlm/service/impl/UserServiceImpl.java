@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import work.cxlm.cache.AbstractStringCacheStore;
 import work.cxlm.config.QfzsProperties;
-import work.cxlm.exception.BadRequestException;
-import work.cxlm.exception.ForbiddenException;
+import work.cxlm.exception.*;
 import work.cxlm.model.entity.Joining;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.params.UserParam;
+import work.cxlm.model.support.CreateCheck;
+import work.cxlm.model.support.UpdateCheck;
 import work.cxlm.rpc.RpcClient;
 import work.cxlm.rpc.code2session.Code2SessionParam;
 import work.cxlm.rpc.code2session.Code2SessionResponse;
@@ -31,14 +32,10 @@ import work.cxlm.security.util.SecurityUtils;
 import work.cxlm.service.JoiningService;
 import work.cxlm.service.UserService;
 import work.cxlm.service.base.AbstractCrudService;
-import work.cxlm.utils.BeanUtils;
-import work.cxlm.utils.QfzsUtils;
-import work.cxlm.utils.ServiceUtils;
-import work.cxlm.utils.ServletUtils;
+import work.cxlm.utils.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static work.cxlm.service.AdminService.ACCESS_TOKEN_EXPIRED_SECONDS;
@@ -74,22 +71,14 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         this.joiningService = joiningService;
     }
 
-//    @Override
-//    public User create(User user) {
-//        if (count() != 0) {
-//            throw new BadRequestException("当前系统不允许多个用户同时存在");
-//        }
-//        User newUser = super.create(user);
-//        eventPublisher.publishEvent(new UserUpdatedEvent(this, newUser.getId()));
-//
-//        return newUser;
-//    }
-
     @Override
     public String getOpenIdByCode(@NonNull String code) {
         Code2SessionParam param = new Code2SessionParam(qfzsProperties.getAppId(), qfzsProperties.getAppSecret(),
                 code, "authorization_code");
         Code2SessionResponse response = RpcClient.getUrl(qfzsProperties.getAppRequestUrl(), Code2SessionResponse.class, param);
+        if (response.getOpenid() == null) {
+            throw new ServiceException("错误的响应").setErrorData(response);
+        }
         return response.getOpenid();
     }
 
@@ -101,22 +90,12 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         }
 
         final User nowUser = userRepository.findByWxId(openId).orElseThrow(
-                () -> new BadRequestException("查询不到您的信息，请您完善信息后使用"));
+                () -> new BadRequestException("查询不到您的信息，请您完善信息后使用").setErrorData(openId));
 
         if (SecurityContextHolder.getContext().isAuthenticated()) {
             throw new BadRequestException("您已登录，无需重复登录");
         }
         log.info("[{}]-[{}] 登录系统", nowUser.getRealName(), ServletUtils.getRequestIp());
-//        return cacheStore.getAny(nowUserCacheKey, User.class).orElseGet(() -> {
-//            Optional<User> userInStorage = userRepository.findByWxId(openId);
-//            if (userInStorage.isPresent()) {  // 存在该用户，进行缓存并返回
-//                cacheStore.putAny(nowUserCacheKey, User.class, 30, TimeUnit.MINUTES);
-//                log.info("用户 [{}] 登录系统", userInStorage.get().getRealName());
-//                return userInStorage.get();
-//            }
-//            log.debug("登录失败，openId: [{}]", openId);
-//            return null;
-//        });
         return buildAuthToken(nowUser);
     }
 
@@ -134,9 +113,9 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         cacheStore.putAny(SecurityUtils.buildAccessTokenKey(user), token.getAccessToken(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
         cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(user), token.getRefreshToken(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
 
-        // Cache those tokens with user id
-        cacheStore.putAny(SecurityUtils.buildAccessTokenKey(token.getAccessToken()), user.getId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
-        cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(token.getRefreshToken()), user.getId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
+        // Cache those tokens with open id
+        cacheStore.putAny(SecurityUtils.buildAccessTokenKey(token.getAccessToken()), user.getWxId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+        cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(token.getRefreshToken()), user.getWxId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
 
         return token;
     }
@@ -144,23 +123,28 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     @Nullable
-    public User updateUserByParam(@Nullable User user, @NonNull UserParam param) {
-        if (user == null) { // 缓存中没有用户信息
-            user = userRepository.findByStudentNo(param.getStudentNo()).orElse(null);
-            if (user == null) { // 数据库中也没有用户信息
-                return null;
+    public User updateUserByParam(@NonNull UserParam param) {
+        User currentUser = SecurityContextHolder.getCurrentUser().orElse(null);
+        if (currentUser == null) { // 缓存中没有用户信息
+            ValidationUtils.validate(param, CreateCheck.class);
+            currentUser = userRepository.findByStudentNo(param.getStudentNo()).orElse(null);
+            if (currentUser == null) { // 数据库中也没有用户信息
+                throw new NotFoundException("无效的学号，请联系管理员授权后使用");
             }
+        } else {
+            ValidationUtils.validate(param, UpdateCheck.class);
         }
-        param.update(user);
-        // eventPublisher.publishEvent(new UserUpdatedEvent(param, user.getId()));
-        // cacheStore.putAny(USER_CACHE_PREFIX + user.getWxId(), User.class, 30, TimeUnit.MINUTES);
-        log.info("用户 [{}]-[{}] 更新（完善）了信息", user.getRealName(), ServletUtils.getRequestIp());
-        return user;
+        param.update(currentUser);
+        currentUser = userRepository.save(currentUser);
+        log.info("用户 [{}]-[{}] 更新（完善）了信息", currentUser.getRealName(), ServletUtils.getRequestIp());
+        return currentUser;
     }
 
     @Override
     @NonNull
-    public Page<PageUserVO> getClubUserPage(User me, Integer clubId, Pageable pageable) {
+    public Page<PageUserVO> getClubUserPage(Integer clubId, Pageable pageable) {
+        User me = SecurityContextHolder.getCurrentUser().orElseThrow(
+                () -> new AuthenticationException("用户登录凭证无效"));
         Joining my = joiningService.getJoiningById(me.getId(), clubId).orElseThrow(() -> new BadRequestException("您不属于该社团，无权查看"));
         Page<Joining> allJoining = joiningService.pageAllJoiningByClubId(clubId, pageable);
         return convertJoiningToUserPage(allJoining, my, pageable);
@@ -171,42 +155,31 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         List<User> joinUsers = userRepository.findAllByIdIn(uids, Sort.unsorted());
         Map<Integer, User> uidUserMap = ServiceUtils.convertToMap(joinUsers, User::getId);
 
-        ArrayList<PageUserVO> sortedUserVoList = new ArrayList<>(joiningPage.getSize());
-        joiningPage.stream().forEach(new Consumer<Joining>() {
-            int counter = 0;
-            boolean foundMe = false;
-
-            @Override
-            public void accept(Joining joining) {
-                // 映射为 PageUserVO 并将自己置顶
-                User nowUser = uidUserMap.get(joining.getId().getUserId());
-                PageUserVO nowVO = new PageUserVO().convertFrom(nowUser);
-                BeanUtils.updateProperties(joining, nowVO);
-                if (my == null) {
-                    sortedUserVoList.set(counter++, nowVO);
-                } else if (foundMe) {
-                    sortedUserVoList.set(counter++, nowVO);
-                } else if (Objects.equals(joining.getId().getUserId(), nowUser.getId())) {
-                    foundMe = true;
-                    sortedUserVoList.set(0, nowVO);
-                    counter++;
-                } else {
-                    sortedUserVoList.set(++counter, nowVO);
-                }
-                counter++;
+        LinkedList<PageUserVO> sortedUserVoList = new LinkedList<>();
+        joiningPage.stream().forEach(joining -> {
+            // 映射为 PageUserVO 并将自己置顶
+            User nowUser = uidUserMap.get(joining.getId().getUserId());
+            PageUserVO nowVO = new PageUserVO().convertFrom(nowUser);
+            BeanUtils.updateProperties(joining, nowVO);
+            if (my != null && Objects.equals(my.getId().getUserId(), nowUser.getId())) {
+                sortedUserVoList.addFirst(nowVO);
+            } else {
+                sortedUserVoList.addLast(nowVO);
             }
         });
-        return new PageImpl<>(sortedUserVoList, pageable, sortedUserVoList.size());
+        return new PageImpl<>(sortedUserVoList, pageable, joiningPage.getTotalElements());
     }
 
     @Override
     @NonNull
-    public PasscodeVO getPasscode(@NonNull User user) {
-        if (!user.getRole().isAdminRole()) {
+    public PasscodeVO getPasscode() {
+        User currentUser = SecurityContextHolder.getCurrentUser().orElseThrow(
+                () -> new AuthenticationException("用户登录凭证无效"));
+        if (!currentUser.getRole().isAdminRole()) {
             throw new ForbiddenException("权限不足，拒绝访问");
         }
         String nowPasscode = RandomUtil.randomString(6);
-        String passcodeCacheKey = QfzsConst.ADMIN_PASSCODE_PREFIX + user.getId();
+        String passcodeCacheKey = QfzsConst.ADMIN_PASSCODE_PREFIX + currentUser.getId();
         cacheStore.put(passcodeCacheKey, nowPasscode, 5, TimeUnit.MINUTES);
         PasscodeVO passcodeVO = new PasscodeVO();
         passcodeVO.setPasscode(nowPasscode);
@@ -217,11 +190,11 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     public AuthToken refreshToken(String refreshToken) {
         Assert.hasText(refreshToken, "Refresh token 不能为空");
 
-        Integer userId = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), Integer.class)
+        String openId = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), String.class)
                 .orElseThrow(() -> new BadRequestException("登录状态已失效，请重新登录").setErrorData(refreshToken));
 
         // 获取用户信息
-        User user = userRepository.getOne(userId);
+        User user = userRepository.findByWxId(openId).orElseThrow(() -> new BadRequestException("用户不存在"));
 
         // 清除原 Token
         cacheStore.getAny(SecurityUtils.buildAccessTokenKey(user), String.class)
@@ -231,5 +204,10 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         cacheStore.delete(SecurityUtils.buildRefreshTokenKey(user));
         // 建立新的 Token
         return buildAuthToken(user);
+    }
+
+    @Override
+    public User getByOpenId(String openId) {
+        return userRepository.findByWxId(openId).orElseThrow(() -> new BadRequestException("非法的 openId"));
     }
 }
