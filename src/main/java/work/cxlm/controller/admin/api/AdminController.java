@@ -43,7 +43,7 @@ public class AdminController {
         return adminService.authenticate(loginParam);
     }
 
-    @PostMapping("logout")
+    @GetMapping("logout")
     @ApiOperation("登出")
     @CacheLock(autoDelete = false)
     public void logout() {
@@ -71,13 +71,13 @@ public class AdminController {
 
     @PutMapping("user")
     @ApiOperation("管理员更新用户信息")
-    public void updateUser(@Valid UserParam userParam) {
+    public void updateUser(@Valid @RequestBody UserParam userParam) {
         adminService.updateBy(userParam);
     }
 
     @PostMapping("user")
     @ApiOperation("管理员新建用户")
-    public void newUser(@Valid UserParam userParam) {
+    public void newUser(@Valid @RequestBody UserParam userParam) {
         adminService.createBy(userParam);
     }
 

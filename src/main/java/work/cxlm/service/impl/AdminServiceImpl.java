@@ -2,6 +2,7 @@ package work.cxlm.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -114,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
     @NonNull
     public AuthToken refreshToken(@NonNull String refreshToken) {
         Assert.notNull(refreshToken, "refresh token 为空，无法刷新登录凭证");
-        return userService.refreshToken(refreshToken, User::getId);
+        return userService.refreshToken(refreshToken, User::getId, userService::getById, Integer.class);
     }
 
     @Override
@@ -133,12 +134,12 @@ public class AdminServiceImpl implements AdminService {
         User admin = SecurityContextHolder.getCurrentUser().orElseThrow(() -> new ForbiddenException("未登录"));
         User targetUser = userRepository.findByStudentNo(param.getStudentNo()).orElseThrow(
                 () -> new ForbiddenException("查询不到该用户信息，请核对后重试"));
-        Club targetClub = clubService.getById(param.getClubId());
+        Club targetClub = param.getClubId() == null ? null : clubService.getById(param.getClubId());
         if (admin.getRole() == UserRole.CLUB_ADMIN) {
             if (param.isSystemAdmin()) {
                 throw new BadRequestException("权限不足，宁无法授权系统管理员");
             }
-            if (userService.managerOf(admin.getId(), targetClub)) {
+            if (targetClub == null || userService.managerOf(admin.getId(), targetClub)) {
                 throw new BadRequestException("宁不是该社团的管理员，不要瞎搞");
             }
         }
@@ -150,7 +151,14 @@ public class AdminServiceImpl implements AdminService {
                     admin.getRealName() + "改变了" + param.getStudentNo() + "系统管理员权限为" + grant));
             return;
         }
+        // 已有系统管理员权限，无需社团权限
+        if (targetUser.getRole() == UserRole.SYSTEM_ADMIN) {
+            return;
+        }
         // 社团管理员授权
+        if (targetClub == null) {
+            throw new NotFoundException("找不到该社团的信息：" + param.getClubId());
+        }
         if (grant) {
             joiningService.joinIfAbsent(targetUser.getId(), targetClub.getId(), true);
         } else {
@@ -190,6 +198,8 @@ public class AdminServiceImpl implements AdminService {
             log.error("没有管理员权限的用户发送了合法的管理员请求");
             throw new ForbiddenException("您的权限不足，无法创建用户信息");
         }
+        User newUser = userParam.convertTo();
+        userRepository.save(newUser);
     }
 
     @Override
@@ -201,9 +211,13 @@ public class AdminServiceImpl implements AdminService {
         if (!admin.getRole().isAdminRole()) {
             throw new ForbiddenException("删除用户只能由系统管理员完成");
         }
-        userRepository.deleteById(userId);
-        joiningService.deleteByUserId(userId);
-        // TODO：删除预定相关信息
+        try {
+            userRepository.deleteById(userId);
+            joiningService.deleteByUserId(userId);
+            // TODO：删除预定相关信息
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("没有该用户，请核对后重试");
+        }
     }
 
     @Override

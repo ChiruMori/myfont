@@ -109,11 +109,12 @@ public class User extends BaseEntity {
     @Override
     public void prePersist() {
         super.prePersist();
-
         if (email == null) {
             email = "";
         }
-
+        if (role == null) {
+            role = UserRole.NORMAL;
+        }
         if (StringUtils.isEmpty(sign)) {
             sign = QfzsConst.DEFAULT_USER_SIGNATURE;
         }

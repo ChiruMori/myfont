@@ -67,7 +67,7 @@ public class SwaggerConfiguration {
         }
 
         return buildApiDocket("用户功能模块 API",
-                "work.cxlm.controller.users",
+                "work.cxlm.controller.mini.api",
                 "/key3/users/api/**")
                 .securitySchemes(contentApiKeys())
                 .securityContexts(contentSecurityContext())
@@ -82,7 +82,7 @@ public class SwaggerConfiguration {
         }
 
         return buildApiDocket("管理员功能 API 文档",
-                "work.cxlm.controller.admin",
+                "work.cxlm.controller.admin.api",
                 "/key3/admin/api/**")
                 .securitySchemes(adminApiKeys())
                 .securityContexts(adminSecurityContext())

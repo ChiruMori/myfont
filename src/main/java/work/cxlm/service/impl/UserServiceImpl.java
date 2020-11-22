@@ -178,28 +178,28 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     @Override
     @NonNull
     public PasscodeVO getPasscode() {
-        User currentUser = SecurityContextHolder.getCurrentUser().orElseThrow(
-                () -> new AuthenticationException("用户登录凭证无效"));
+        User currentUser = SecurityContextHolder.ensureUser();
         if (!currentUser.getRole().isAdminRole()) {
             throw new ForbiddenException("权限不足，拒绝访问");
         }
         String nowPasscode = RandomUtil.randomString(6);
         String passcodeCacheKey = QfzsConst.ADMIN_PASSCODE_PREFIX + currentUser.getId();
-        cacheStore.put(passcodeCacheKey, nowPasscode, 5, TimeUnit.MINUTES);
+        cacheStore.putAny(passcodeCacheKey, nowPasscode, 5, TimeUnit.MINUTES);
         PasscodeVO passcodeVO = new PasscodeVO();
         passcodeVO.setPasscode(nowPasscode);
         return passcodeVO;
     }
 
     @Override
-    public <T> AuthToken refreshToken(String refreshToken, Function<User, T> converter) {
+    public <T> AuthToken refreshToken(String refreshToken, Function<User, T> idGetter,
+                                      Function<T, User> userGetter, Class<T> idType) {
         Assert.hasText(refreshToken, "Refresh token 不能为空");
 
-        String openId = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), String.class)
+        T usingId = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), idType)
                 .orElseThrow(() -> new BadRequestException("登录状态已失效，请重新登录").setErrorData(refreshToken));
 
         // 获取用户信息
-        User user = userRepository.findByWxId(openId).orElseThrow(() -> new BadRequestException("用户不存在"));
+        User user = userGetter.apply(usingId);
 
         // 清除原 Token
         cacheStore.getAny(SecurityUtils.buildAccessTokenKey(user), String.class)
@@ -208,7 +208,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         cacheStore.delete(SecurityUtils.buildAccessTokenKey(user));
         cacheStore.delete(SecurityUtils.buildRefreshTokenKey(user));
         // 建立新的 Token
-        return buildAuthToken(user, converter);
+        return buildAuthToken(user, idGetter);
     }
 
     @Override

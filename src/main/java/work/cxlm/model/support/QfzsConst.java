@@ -40,7 +40,7 @@ public class QfzsConst {
     /**
      * Admin token param name.
      */
-    public final static String ADMIN_TOKEN_QUERY_NAME = "admin_token";
+    public final static String ADMIN_TOKEN_QUERY_NAME = "admin_token_" + HttpHeaders.AUTHORIZATION;
     /**
      * Content token header name.
      */

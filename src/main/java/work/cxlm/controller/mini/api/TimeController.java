@@ -14,7 +14,7 @@ import work.cxlm.service.impl.TimeServiceImpl;
  */
 @Slf4j
 @RestController
-@RequestMapping("/key3/time/")
+@RequestMapping("/key3/time/api/")
 public class TimeController {
 
     private TimeService timeService;

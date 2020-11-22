@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 @ToString
 public class LoginParam {
 
-    @NotBlank(message = "授权学号不能为空")
+    @NotNull(message = "授权学号不能为空")
     private Long studentNo;
 
     @NotBlank(message = "登录口令不能为空")

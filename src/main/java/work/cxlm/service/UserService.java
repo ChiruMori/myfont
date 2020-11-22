@@ -70,7 +70,7 @@ public interface UserService extends CrudService<User, Integer> {
     /**
      * 刷新用户登录凭证到期事件
      */
-    <T> AuthToken refreshToken(String refreshToken, Function<User, T> converter);
+    <T> AuthToken refreshToken(String refreshToken, Function<User, T> idGetter, Function<T, User> userGetter, Class<T> idType);
 
     /**
      * 通过 openId 查询用户信息

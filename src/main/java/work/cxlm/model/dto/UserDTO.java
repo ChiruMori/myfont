@@ -24,7 +24,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class UserDTO extends SimpleUserDTO implements OutputConverter<UserDTO, User> {
 
-    private String studentNo;
+    private Long studentNo;
 
     private String email;
 

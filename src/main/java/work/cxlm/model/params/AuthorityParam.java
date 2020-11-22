@@ -5,6 +5,7 @@ import lombok.Data;
 import work.cxlm.model.support.CreateCheck;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @Data
 public class AuthorityParam {
 
-    @NotEmpty(message = "学号不能为空", groups = CreateCheck.class)
+    @NotNull(message = "学号不能为空", groups = CreateCheck.class)
     private Long studentNo;
 
     @ApiModelProperty("是否为系统管理员权限")

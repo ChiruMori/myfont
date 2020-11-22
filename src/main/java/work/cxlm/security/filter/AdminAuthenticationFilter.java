@@ -46,7 +46,7 @@ public class AdminAuthenticationFilter extends AbstractAuthenticationFilter {
         // 针对管理员相关的 API 接口进行过滤
         addToBlackSet("/key3/admin/api/**");
         // 排除管理员登录、更新 Token 接口
-        addToWhiteSet("/key3/users/api/refresh", "/key3/users/api/login");
+        addToWhiteSet("/key3/admin/api/login");
         DefaultAuthenticationFailureHandler failureHandler = new DefaultAuthenticationFailureHandler();
         failureHandler.setProductEnv(qfzsProperties.isProductionEnv());
         failureHandler.setObjectMapper(objectMapper);

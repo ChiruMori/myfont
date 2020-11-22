@@ -63,7 +63,7 @@ public class UserController {
     @ApiOperation("刷新用户凭证过期时间，需要使用 refreshToken 进行刷新")
     @CacheLock(autoDelete = false, prefix = "refresh_check")
     public AuthToken refresh(@PathVariable("refreshToken") String refreshToken) {
-        return userService.refreshToken(refreshToken, User::getWxId);
+        return userService.refreshToken(refreshToken, User::getWxId, userService::getByOpenId, String.class);
     }
 
     @ApiOperation(value = "获取本社团的用户列表", notes = "注意分页处理与参数\n需要 accessToken 且必填，标识用户会话")
