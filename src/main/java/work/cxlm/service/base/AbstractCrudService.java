@@ -7,9 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import work.cxlm.exception.NotFoundException;
-import work.cxlm.model.enums.ValueEnum;
-import work.cxlm.model.properties.PropertyEnum;
 import work.cxlm.repository.BaseRepository;
+import work.cxlm.repository.RoomRepository;
 
 
 import java.lang.reflect.ParameterizedType;
