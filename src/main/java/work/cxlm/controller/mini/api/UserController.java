@@ -1,4 +1,4 @@
-package work.cxlm.controller.users.api;
+package work.cxlm.controller.mini.api;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -53,6 +53,7 @@ public class UserController {
 
     @ApiOperation(value = "用户登录", notes = "必须传递 code 登录成功将会获得用户登录凭证（accessToken），如果用户不存在则得到字段均为 null 的响应")
     @PostMapping("/login")
+    @CacheLock(autoDelete = false, prefix = "login_check")
     public AuthToken userLogin(@Valid @RequestBody UserLoginParam userLoginParam) {
         String openId = userService.getOpenIdByCode(userLoginParam.getCode());
         return userService.login(openId);
@@ -60,9 +61,9 @@ public class UserController {
 
     @PostMapping("/refresh/{refreshToken}")
     @ApiOperation("刷新用户凭证过期时间，需要使用 refreshToken 进行刷新")
-    @CacheLock(autoDelete = false)
+    @CacheLock(autoDelete = false, prefix = "refresh_check")
     public AuthToken refresh(@PathVariable("refreshToken") String refreshToken) {
-        return userService.refreshToken(refreshToken);
+        return userService.refreshToken(refreshToken, User::getWxId);
     }
 
     @ApiOperation(value = "获取本社团的用户列表", notes = "注意分页处理与参数\n需要 accessToken 且必填，标识用户会话")

@@ -1,7 +1,6 @@
 package work.cxlm.model.properties;
 
 /**
- * TODO: 放置系统配置项，确定无需系统配置项时，可以删除本类。如需要可能需要重新引入系统安装模块
  * created 2020/11/14 23:07
  *
  * @author Chiru
@@ -13,9 +12,9 @@ public enum PrimaryProperties implements PropertyEnum {
     START_TIME("start_time", Long.class, ""),
 
     /**
-     * 系统是否已安装
+     * 图标
      */
-    IS_INSTALLED("is_installed", Boolean.class, "false"),
+    FAVICON_URL("favicon_url", String.class, "https://cxlm.work/upload/2020/09/favicon-4200eb5642b94655a0b1892b0dd6f6d6.png")
     ;
 
     private final String value;

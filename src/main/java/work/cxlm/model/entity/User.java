@@ -20,7 +20,9 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = { // 唯一键约束（改为BIGINT，作为索引会更快一些），学号必须唯一
+        @UniqueConstraint(name = "uni_stu_no", columnNames = "student_no")
+})
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
@@ -46,7 +48,7 @@ public class User extends BaseEntity {
      * 学工号
      */
     @Column(name = "student_no", length = 15)
-    private String studentNo;
+    private Long studentNo;
 
     /**
      * 学院名

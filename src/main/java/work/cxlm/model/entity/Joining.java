@@ -44,7 +44,8 @@ public class Joining extends BaseEntity {
     @Override
     public void prePersist() {
         super.prePersist();
-        position = "打酱油的";
+        position = "社员";
+        admin = false;
         total = 0;
         point = 0;
     }

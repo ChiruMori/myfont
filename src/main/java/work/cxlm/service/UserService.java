@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import work.cxlm.exception.NotFoundException;
+import work.cxlm.model.entity.Club;
 import work.cxlm.model.entity.User;
 import work.cxlm.model.params.UserLoginParam;
 import work.cxlm.model.params.UserParam;
@@ -14,6 +15,7 @@ import work.cxlm.security.token.AuthToken;
 import work.cxlm.service.base.CrudService;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * created 2020/10/21 16:01
@@ -23,39 +25,6 @@ import java.util.Optional;
  * @author cxlm
  */
 public interface UserService extends CrudService<User, Integer> {
-    /**
-     * 统计失败登录尝试的 key
-     */
-    String LOGIN_FAILURE_COUNT_KEY = "login.failure.count";
-
-    /**
-     * 最大允许失败尝试次数
-     */
-    int MAX_LOGIN_TRY = 5;
-
-    /**
-     * 失败次数到达上限后，锁住的时间
-     */
-    int LOCK_MINUTES = 10;
-
-//    /**
-//     * 通过用户名获取用户
-//     *
-//     * @param realName 用户名，不可为 null
-//     * @return Optional 封装的 User
-//     */
-//    @NonNull
-//    Optional<User> getByRealName(@NonNull String realName);
-//
-//    /**
-//     * 通过用户名获取用户
-//     *
-//     * @param realName 用户名，不可为 null
-//     * @return User 实例
-//     * @throws NotFoundException 用户不存在时抛出
-//     */
-//    @NonNull
-//    User getByRealNameOfNonNull(@NonNull String realName);
 
     /**
      * 通过用户登录凭证获取 openId
@@ -74,6 +43,11 @@ public interface UserService extends CrudService<User, Integer> {
      */
     @Nullable
     AuthToken login(@Nullable String openId);
+
+    /**
+     * 为用户创建合法登录凭证
+     */
+    <T> AuthToken buildAuthToken(@NonNull User user, Function<User, T> converter);
 
     /**
      * 通过表单更新用户信息
@@ -96,10 +70,40 @@ public interface UserService extends CrudService<User, Integer> {
     /**
      * 刷新用户登录凭证到期事件
      */
-    AuthToken refreshToken(String refreshToken);
+    <T> AuthToken refreshToken(String refreshToken, Function<User, T> converter);
 
     /**
      * 通过 openId 查询用户信息
      */
     User getByOpenId(String integer);
+
+    /**
+     * 通过学号查找用户
+     */
+    Optional<User> getByStudentNo(Long studentNo);
+
+    /**
+     * 判断用户是否为某社团的管理员
+     *
+     * @param userId 用户 id
+     * @param club   社团
+     * @return 布尔值表示结果
+     */
+    boolean managerOf(@NonNull Integer userId, @NonNull Club club);
+
+    /**
+     * 判断用户是否为另一用户的管理员
+     *
+     * @param userId 当前用户（准管理员）
+     * @param other  另一用户
+     */
+    boolean managerOf(@NonNull Integer userId, @NonNull User other);
+
+    /**
+     * 判断用户是否为另一用户的管理员
+     *
+     * @param admin 当前用户（准管理员）
+     * @param other 另一用户
+     */
+    boolean managerOf(@NonNull User admin, @NonNull User other);
 }

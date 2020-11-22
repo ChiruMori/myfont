@@ -68,7 +68,7 @@ public class SwaggerConfiguration {
 
         return buildApiDocket("用户功能模块 API",
                 "work.cxlm.controller.users",
-                "/key3/users/**")
+                "/key3/users/api/**")
                 .securitySchemes(contentApiKeys())
                 .securityContexts(contentSecurityContext())
                 .enable(!qfzsProperties.isDocDisabled());
@@ -83,7 +83,7 @@ public class SwaggerConfiguration {
 
         return buildApiDocket("管理员功能 API 文档",
                 "work.cxlm.controller.admin",
-                "/key3/admin/**")
+                "/key3/admin/api/**")
                 .securitySchemes(adminApiKeys())
                 .securityContexts(adminSecurityContext())
                 .enable(!qfzsProperties.isDocDisabled());
@@ -98,7 +98,7 @@ public class SwaggerConfiguration {
 
         return buildApiDocket("时段相关 API 文档",
                 "work.cxlm.controller.time",
-                "/key3/time/**")
+                "/key3/time/api/**")
                 .securitySchemes(adminApiKeys())
                 .securityContexts(adminSecurityContext())
                 .enable(!qfzsProperties.isDocDisabled());
