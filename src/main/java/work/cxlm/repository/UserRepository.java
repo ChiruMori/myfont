@@ -1,5 +1,7 @@
 package work.cxlm.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import work.cxlm.model.entity.User;
@@ -26,7 +28,7 @@ public interface UserRepository extends BaseRepository<User, Integer> {
      * @param studentNo 学工号
      */
     @NonNull
-    Optional<User> findByStudentNo(@NonNull String studentNo);
+    Optional<User> findByStudentNo(@NonNull Long studentNo);
 
     /**
      * @param openId openId，从小程序得到的唯一标识
@@ -34,4 +36,7 @@ public interface UserRepository extends BaseRepository<User, Integer> {
      */
     @NonNull
     Optional<User> findByWxId(@NonNull String openId);
+
+    @NonNull
+    Page<User> findAllBy(@NonNull Pageable pageable);
 }

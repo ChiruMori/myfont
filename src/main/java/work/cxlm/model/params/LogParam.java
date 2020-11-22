@@ -29,7 +29,7 @@ public class LogParam implements InputConverter<Log> {
     private LogType type;
 
     @NotBlank(message = "日志内容不能为空")
-    @Size(max = 1023, message = "日志内容必须小于 1023")
+    @Size(max = 1023, message = "日志内容必须小于 {max}")
     private String content;
 
     private String ip;

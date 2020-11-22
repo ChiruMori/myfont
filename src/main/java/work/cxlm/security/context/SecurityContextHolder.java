@@ -2,6 +2,7 @@ package work.cxlm.security.context;
 
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import work.cxlm.exception.ForbiddenException;
 import work.cxlm.model.entity.User;
 import work.cxlm.security.authentication.Authentication;
 
@@ -17,7 +18,8 @@ public class SecurityContextHolder {
 
     private final static ThreadLocal<SecurityContext> CONTEXT_HOLDER = new ThreadLocal<>();
 
-    private SecurityContextHolder(){}
+    private SecurityContextHolder() {
+    }
 
     public static SecurityContext getContext() {
         SecurityContext context = CONTEXT_HOLDER.get();
@@ -50,5 +52,12 @@ public class SecurityContextHolder {
         Authentication a = getContext().getAuthentication();
         Assert.notNull(a, "从合法上下文解析出非法登录凭证");
         return Optional.of(a.getUserDetail().getUser());
+    }
+
+    /**
+     * 确保用户已登录并得到用户实体，否则抛出异常
+     */
+    public static User ensureUser() {
+        return getCurrentUser().orElseThrow(() -> new ForbiddenException("未登录"));
     }
 }

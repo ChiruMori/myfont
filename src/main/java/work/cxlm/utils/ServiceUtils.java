@@ -6,6 +6,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import work.cxlm.model.entity.User;
+import work.cxlm.model.vo.PageUserVO;
 
 import java.util.*;
 import java.util.function.Function;
@@ -148,6 +150,29 @@ public class ServiceUtils {
         Assert.notNull(page, "Page 参数不能为 null");
 
         return new PageImpl<>(Collections.emptyList(), page.getPageable(), 0);
+    }
+
+    /**
+     * 使用指定的函数转化分页内元素类型
+     *
+     * @param srcPage   原分页
+     * @param pageable  分页实例，可以为 null
+     * @param converter 转化函数
+     * @param <SRC>     源实例类型
+     * @param <TAR>     目标实例类型
+     */
+    public static <SRC, TAR> Page<TAR> convertPageElements(@NonNull Page<SRC> srcPage, @Nullable Pageable pageable,
+                                                           @NonNull Function<SRC, TAR> converter) {
+        Assert.notNull(srcPage, "原始分页不能为 Null");
+        Assert.notNull(converter, "转换函数不能为 null");
+
+        if (pageable == null) {
+            pageable = buildLatestPageable(srcPage.getSize());
+        }
+
+        LinkedList<TAR> targetList = new LinkedList<>();
+        srcPage.stream().forEach(src -> targetList.add(converter.apply(src)));
+        return new PageImpl<>(targetList, pageable, srcPage.getTotalElements());
     }
 
 }

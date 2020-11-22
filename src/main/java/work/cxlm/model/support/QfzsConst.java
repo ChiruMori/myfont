@@ -79,4 +79,6 @@ public class QfzsConst {
      * 管理员登录时使用的 Passcode 缓存前缀
      */
     public final static String ADMIN_PASSCODE_PREFIX = "admin_pass_";
+
+    public final static String DEFAULT_ERROR_PATH = "error/error";
 }

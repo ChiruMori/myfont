@@ -23,9 +23,8 @@ public class UserParam implements InputConverter<User> {
     @Size(max = 100, message = "微信名长度不能超过 {max}")
     private String wxName;
 
-    @NotEmpty(message = "学号不能为空", groups = CreateCheck.class)
-    @Size(max = 15, message = "学工号长度不能超过 {max}")
-    private String studentNo;
+    @NotEmpty(message = "学号不能为空")
+    private Long studentNo;
 
     @Size(max = 50, message = "学院名长度不能超过 {max}")
     private String institute;

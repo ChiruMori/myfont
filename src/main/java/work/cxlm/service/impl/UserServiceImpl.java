@@ -2,6 +2,7 @@ package work.cxlm.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,8 +15,11 @@ import org.springframework.util.Assert;
 import work.cxlm.cache.AbstractStringCacheStore;
 import work.cxlm.config.QfzsProperties;
 import work.cxlm.exception.*;
+import work.cxlm.model.entity.Club;
 import work.cxlm.model.entity.Joining;
 import work.cxlm.model.entity.User;
+import work.cxlm.model.entity.id.JoiningId;
+import work.cxlm.model.enums.UserRole;
 import work.cxlm.model.params.UserParam;
 import work.cxlm.model.support.CreateCheck;
 import work.cxlm.model.support.UpdateCheck;
@@ -36,6 +40,7 @@ import work.cxlm.utils.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static work.cxlm.service.AdminService.ACCESS_TOKEN_EXPIRED_SECONDS;
@@ -52,22 +57,26 @@ import static work.cxlm.service.AdminService.REFRESH_TOKEN_EXPIRED_DAYS;
 @Slf4j
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
+    private JoiningService joiningService;
+
     private final UserRepository userRepository;
     private final QfzsProperties qfzsProperties;
     private final ApplicationEventPublisher eventPublisher;
     private final AbstractStringCacheStore cacheStore;
-    private final JoiningService joiningService;
 
     public UserServiceImpl(UserRepository userRepository,
                            ApplicationEventPublisher eventPublisher,
                            QfzsProperties qfzsProperties,
-                           AbstractStringCacheStore cacheStore,
-                           JoiningService joiningService) {
+                           AbstractStringCacheStore cacheStore) {
         super(userRepository);
         this.userRepository = userRepository;
         this.eventPublisher = eventPublisher;
         this.qfzsProperties = qfzsProperties;
         this.cacheStore = cacheStore;
+    }
+
+    @Autowired
+    public void setJoiningService(JoiningService joiningService) {
         this.joiningService = joiningService;
     }
 
@@ -96,10 +105,11 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
             throw new BadRequestException("您已登录，无需重复登录");
         }
         log.info("[{}]-[{}] 登录系统", nowUser.getRealName(), ServletUtils.getRequestIp());
-        return buildAuthToken(nowUser);
+        return buildAuthToken(nowUser, User::getWxId);
     }
 
-    private AuthToken buildAuthToken(@NonNull User user) {
+    @Override
+    public <T> AuthToken buildAuthToken(@NonNull User user, Function<User, T> converter) {
         Assert.notNull(user, "User must not be null");
 
         // Generate new token
@@ -114,8 +124,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(user), token.getRefreshToken(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
 
         // Cache those tokens with open id
-        cacheStore.putAny(SecurityUtils.buildAccessTokenKey(token.getAccessToken()), user.getWxId(), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
-        cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(token.getRefreshToken()), user.getWxId(), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
+        cacheStore.putAny(SecurityUtils.buildAccessTokenKey(token.getAccessToken()), converter.apply(user), ACCESS_TOKEN_EXPIRED_SECONDS, TimeUnit.SECONDS);
+        cacheStore.putAny(SecurityUtils.buildRefreshTokenKey(token.getRefreshToken()), converter.apply(user), REFRESH_TOKEN_EXPIRED_DAYS, TimeUnit.DAYS);
 
         return token;
     }
@@ -143,31 +153,26 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     @Override
     @NonNull
     public Page<PageUserVO> getClubUserPage(Integer clubId, Pageable pageable) {
-        User me = SecurityContextHolder.getCurrentUser().orElseThrow(
-                () -> new AuthenticationException("用户登录凭证无效"));
-        Joining my = joiningService.getJoiningById(me.getId(), clubId).orElseThrow(() -> new BadRequestException("您不属于该社团，无权查看"));
+        User me = SecurityContextHolder.ensureUser();
+        if (me.getRole() != UserRole.SYSTEM_ADMIN) {  // 系统管理员无视权限
+            joiningService.getJoiningById(me.getId(), clubId).orElseThrow(() -> new BadRequestException("您不属于该社团，无权查看"));
+        }
         Page<Joining> allJoining = joiningService.pageAllJoiningByClubId(clubId, pageable);
-        return convertJoiningToUserPage(allJoining, my, pageable);
+        return convertJoiningToUserPage(allJoining, pageable);
     }
 
-    private Page<PageUserVO> convertJoiningToUserPage(Page<Joining> joiningPage, @Nullable Joining my, Pageable pageable) {
+    private Page<PageUserVO> convertJoiningToUserPage(Page<Joining> joiningPage, Pageable pageable) {
         List<Integer> uids = joiningPage.stream().map(join -> join.getId().getUserId()).collect(Collectors.toList());
         List<User> joinUsers = userRepository.findAllByIdIn(uids, Sort.unsorted());
         Map<Integer, User> uidUserMap = ServiceUtils.convertToMap(joinUsers, User::getId);
 
-        LinkedList<PageUserVO> sortedUserVoList = new LinkedList<>();
-        joiningPage.stream().forEach(joining -> {
-            // 映射为 PageUserVO 并将自己置顶
-            User nowUser = uidUserMap.get(joining.getId().getUserId());
+        return ServiceUtils.convertPageElements(joiningPage, pageable, src -> {
+            // 映射为 PageUserVO
+            User nowUser = uidUserMap.get(src.getId().getUserId());
             PageUserVO nowVO = new PageUserVO().convertFrom(nowUser);
-            BeanUtils.updateProperties(joining, nowVO);
-            if (my != null && Objects.equals(my.getId().getUserId(), nowUser.getId())) {
-                sortedUserVoList.addFirst(nowVO);
-            } else {
-                sortedUserVoList.addLast(nowVO);
-            }
+            BeanUtils.updateProperties(src, nowVO);
+            return nowVO;
         });
-        return new PageImpl<>(sortedUserVoList, pageable, joiningPage.getTotalElements());
     }
 
     @Override
@@ -187,7 +192,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public AuthToken refreshToken(String refreshToken) {
+    public <T> AuthToken refreshToken(String refreshToken, Function<User, T> converter) {
         Assert.hasText(refreshToken, "Refresh token 不能为空");
 
         String openId = cacheStore.getAny(SecurityUtils.buildRefreshTokenKey(refreshToken), String.class)
@@ -203,11 +208,54 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         cacheStore.delete(SecurityUtils.buildAccessTokenKey(user));
         cacheStore.delete(SecurityUtils.buildRefreshTokenKey(user));
         // 建立新的 Token
-        return buildAuthToken(user);
+        return buildAuthToken(user, converter);
     }
 
     @Override
     public User getByOpenId(String openId) {
         return userRepository.findByWxId(openId).orElseThrow(() -> new BadRequestException("非法的 openId"));
+    }
+
+    @Override
+    public Optional<User> getByStudentNo(Long studentNo) {
+        return userRepository.findByStudentNo(studentNo);
+    }
+
+    @Override
+    public boolean managerOf(@NonNull Integer userId, @NonNull Club club) {
+        Assert.notNull(userId, "用户 ID 不能为 null");
+        Assert.notNull(club, "社团不能为 null");
+
+        JoiningId jid = new JoiningId(userId, club.getId());
+        Joining joining = joiningService.getByIdOfNullable(jid);
+        return joining != null && joining.getAdmin();
+    }
+
+    @Override
+    public boolean managerOf(@NonNull Integer userId, @NonNull User other) {
+        Assert.notNull(userId, "用户 id 不能为 null");
+        Assert.notNull(other, "另一用户不能为 null");
+        return managerOf(userRepository.getOne(userId), other);
+    }
+
+    @Override
+    public boolean managerOf(@NonNull User admin, @NonNull User other) {
+        Assert.notNull(admin, "用户不能为 null");
+        Assert.notNull(other, "另一用户不能为 null");
+
+        // 系统管理员无视权限
+        if (admin.getRole() == UserRole.SYSTEM_ADMIN) {
+            return true;
+        }
+
+        List<Joining> adminJoin = joiningService.listAllJoiningByUserId(admin.getId());
+        List<Joining> otherJoin = joiningService.listAllJoiningByUserId(other.getId());
+        return adminJoin.stream().anyMatch(adminJoining ->
+                // 管理员在当前社团中为管理员角色
+                adminJoining.getAdmin() && otherJoin.stream().anyMatch(otherJoining ->
+                        // 管理员加入的社团也被 other 用户加入
+                        Objects.equals(adminJoining.getId().getClubId(), otherJoining.getId().getClubId())
+                )
+        );
     }
 }

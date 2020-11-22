@@ -1,9 +1,14 @@
 package work.cxlm.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import work.cxlm.exception.ForbiddenException;
-import work.cxlm.model.entity.User;
+import org.springframework.transaction.annotation.Transactional;
+import work.cxlm.model.dto.UserDTO;
+import work.cxlm.model.params.LoginParam;
+import work.cxlm.model.params.AuthorityParam;
+import work.cxlm.model.params.UserParam;
 import work.cxlm.security.token.AuthToken;
 
 /**
@@ -23,13 +28,10 @@ public interface AdminService {
     int REFRESH_TOKEN_EXPIRED_DAYS = 30;
 
     /**
-     * 通过用户表单验证用户名、密码
-     *
-     * @param loginParam 登录表单，不可为 null
-     * @return User 用户实例
+     * 管理员登录后台
      */
-//    @NonNull
-//    User authenticate(@NonNull LoginParam loginParam);
+    @NonNull
+    AuthToken authenticate(@NonNull LoginParam loginParam);
 
     /**
      * 清除用户授权
@@ -46,10 +48,39 @@ public interface AdminService {
     AuthToken refreshToken(@NonNull String refreshToken);
 
     /**
-     * 用户未过期
-     *
-     * @param user 用户实例，必不能为 null
-     * @throws ForbiddenException 用户已过期时抛出
+     * 为用户授予管理员权限
      */
-    void mustNotExpire(@NonNull User user);
+    @Transactional
+    void grant(AuthorityParam param);
+
+    /**
+     * 收回用户权限
+     */
+    @Transactional
+    void revoke(AuthorityParam param);
+
+    /**
+     * 使用用户信息表单更新用户信息
+     *
+     * @param userParam 用户信息表单
+     */
+    void updateBy(@NonNull UserParam userParam);
+
+    /**
+     * 使用用户信息表单创建用户
+     *
+     * @param userParam 用户信息表单
+     */
+    void createBy(@NonNull UserParam userParam);
+
+    /**
+     * 清除与该用户相关的全部信息
+     */
+    @Transactional
+    void delete(@NonNull Integer userId);
+
+    /**
+     * 查询所有用户
+     */
+    Page<UserDTO> pageUsers(Pageable pageable);
 }
