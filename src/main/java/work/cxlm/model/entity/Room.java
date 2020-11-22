@@ -6,10 +6,12 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Range;
+import work.cxlm.model.enums.RoomState;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 活动室实体类
@@ -98,4 +100,13 @@ public class Room extends BaseEntity {
      */
     @Column(name = "cost")
     private Integer cost;
+
+    @Column(name = "roomState")
+    private RoomState roomState;
+
+    @Column(name = "timePeriod")
+    @OneToMany(targetEntity = TimePeriod.class)
+    private List<TimePeriod> timePeriod;
+
+
 }

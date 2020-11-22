@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
+import work.cxlm.model.enums.TimeState;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,13 +18,13 @@ import java.util.Date;
  *
  * @author Chiru
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "time_period")
 @ToString
-@EqualsAndHashCode
 @NoArgsConstructor
-public class TimePeriod {
+public class TimePeriod extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "custom-id")
@@ -76,4 +77,11 @@ public class TimePeriod {
     @Column(name = "late")
     @ColumnDefault("1")
     private Boolean late;
+
+    /*
+    * 当前时间段的状态：空闲  预定  预定且被关注  禁用
+    * */
+    @Column(name = "state")
+    @ColumnDefault("0") //默认空闲
+    private TimeState timeState;
 }
