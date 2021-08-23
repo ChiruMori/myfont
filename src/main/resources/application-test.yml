@@ -9,18 +9,16 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/key3?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=UTC
-    username: root
-    password: DB9749
+    url: jdbc:mysql://127.0.0.1:6621/key3?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=UTC
+    username: cxlm
+    password: DB_mima~9749
   jpa:
     show-sql: true
-  cache:
-    type: none
 
 qfzs:
   doc-disabled: false
   production-env: false
-  #  auth-enabled: true
+#  auth-enabled: true
   mode: development
   workDir: ${user.home}/my-font-dev/
-  cache: memory
+  cache: level
